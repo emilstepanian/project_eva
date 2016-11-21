@@ -3,6 +3,7 @@ package logic.controller;
 import dal.DBWrapper;
 import model.entity.Course;
 import model.entity.Lecture;
+import model.entity.Review;
 import model.entity.Study;
 import model.user.User;
 
@@ -74,9 +75,6 @@ public class AdminController extends UserController {
         }
 
 
-
-
-
     }
 
     public void assignSingleCourse(int userId, int courseId){
@@ -94,9 +92,52 @@ public class AdminController extends UserController {
 
     }
 
+    public void deleteUser(int userId){
+        try {
+            //First, delete from course_attendant table
+            Map<String, String> courseAttendantWhereParam = new HashMap<String, String>();
+            courseAttendantWhereParam.put("user_id", String.valueOf(userId));
+            DBWrapper.deleteRecords("course_attendant", courseAttendantWhereParam);
 
+            //Next, delete from user table
+            Map<String, String > userWhereParam = new HashMap<String, String>();
+            userWhereParam.put("id", String.valueOf(userId));
+            DBWrapper.deleteRecords("user", userWhereParam);
+
+        } catch(Exception ex){
+
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+
+
+    /**
+     * Returns a single record of a specified object type
+     * @param id ID of the specified object
+     * @param modification '1' for User object,
+     *                     '2' for Study object,
+     *                     '3' for Course object,
+     *                     '4' for Lecture object,
+     *                     '5' for Review object
+     * @return Returns the record in the specified object type.
+     */
     public Object getSingleRecord(int id, int modification){
-
+        switch (modification){
+            case 1:
+                return getSingleUser(id);
+            case 2:
+                return getSingleStudy(id);
+            case 3:
+                return getSingleCourse(id);
+            case 4:
+                return getSingleLecture(id);
+            case 5:
+                return getSingleReview(id);
+            default:
+                return null;
+        }
     }
 
 
@@ -150,7 +191,7 @@ public class AdminController extends UserController {
             Map<String, String> whereParam = new HashMap<String, String>();
             whereParam.put("id", String.valueOf(courseId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("study", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords("course", null, whereParam, null);
             rowSet.next();
             course.setId(rowSet.getString("id"));
             //course.setEvents(rowSet.getString("shortname"));
@@ -162,9 +203,8 @@ public class AdminController extends UserController {
             System.out.println(ex.getMessage());
 
         }
-        return study;
+        return course;
     }
-
 
     private Lecture getSingleLecture(int lectureId){
         Lecture lecture = new Lecture();
@@ -173,7 +213,7 @@ public class AdminController extends UserController {
             Map<String, String> whereParam = new HashMap<String, String>();
             whereParam.put("id", String.valueOf(lectureId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("user", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords("lecture", null, whereParam, null);
             rowSet.next();
             lecture.setLectureId(rowSet.getInt("id"));
             lecture.setCourseId(rowSet.getString("course_id"));
@@ -188,6 +228,29 @@ public class AdminController extends UserController {
 
         }
         return lecture;
+    }
+
+    private Review getSingleReview(int reviewId){
+        Review review = new Review();
+
+        try {
+            Map<String, String> whereParam = new HashMap<String, String>();
+            whereParam.put("id", String.valueOf(reviewId));
+
+            CachedRowSet rowSet = DBWrapper.getRecords("review", null, whereParam, null);
+            rowSet.next();
+            review.setId(rowSet.getInt("id"));
+            review.setUserId(rowSet.getInt("user_id"));
+            review.setLectureId(rowSet.getInt("lecture_id"));
+            review.setRating(rowSet.getInt("rating"));
+            review.setComment(rowSet.getString("comment"));
+
+
+        } catch(SQLException ex){
+            System.out.println(ex.getMessage());
+
+        }
+        return review;
     }
 
 

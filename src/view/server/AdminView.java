@@ -1,6 +1,9 @@
 package view.server;
 
 import logic.controller.AdminController;
+import model.entity.Course;
+import model.entity.Review;
+import model.entity.Study;
 import model.user.User;
 
 import java.sql.SQLException;
@@ -43,7 +46,6 @@ public class AdminView {
                     System.out.println("\nLogging out..\n");
                     keepLoggedIn = false;
                     break;
-
                 case 1:
                     createUserView();
                     break;
@@ -54,18 +56,18 @@ public class AdminView {
                     deleteUserView();
                     break;
                 case 4:
-
-
-
-
-
+                    deleteReviewView();
+                    break;
+                default:
+                    System.out.println("Wrong input, try again");
+                    break;
             }
 
         } while(keepLoggedIn);
 
     }
 
-    public void createUserView(){
+    private void createUserView(){
         User newUser = new User();
         do{
             input.nextLine();
@@ -114,7 +116,7 @@ public class AdminView {
     }
 
 
-    public void assignCoursesView(){
+    private void assignCoursesView(){
         input.nextLine();
         System.out.println("\nPress [ 1 ] to assign courses by study (used for students)");
         System.out.println("Press [ 2 ] to assign a single course (used for teachers\n");
@@ -126,11 +128,32 @@ public class AdminView {
 
                     System.out.println("Enter ID of the student: ");
                     int studentId = input.nextInt();
+                    User user = (User) adminCtrl.getSingleRecord(studentId, 1);
+
+                    System.out.println("You have chosen student: " + user.getFirstName() + " " + user.getLastName());
 
                     System.out.println("Enter ID of the study: ");
                     int studyId = input.nextInt();
-                    adminCtrl.assignStudy(studentId, studyId);
-                    break;
+
+                    Study study = (Study) adminCtrl.getSingleRecord(studyId, 2);
+                    System.out.println("You have chosen Study: " + study.getName());
+                    System.out.println("Are you sure you want to assign the courses for " +
+                            study.getName() + " to " + user.getFirstName() + "?");
+                    System.out.println("[ 1 ] Yes \n[ 2 ] No");
+                    int confirm = input.nextInt();
+                    if(confirm == 1){
+                        adminCtrl.assignStudy(studentId, studyId);
+                        System.out.println("Courses successfully assigned.");
+                        break;
+                    } else if(confirm == 2) {
+                        System.out.println("Reverting back to main menu...");
+                        break;
+                    } else {
+                        System.out.println("Invalid input.\n Reverting back to main menu");
+                        break;
+                    }
+
+
 
                 } catch(Exception ex){
                     System.out.println("An Error has occurred. Did not assign courses.");
@@ -141,13 +164,32 @@ public class AdminView {
                 case 2:
                     try {
 
-                        System.out.println("Enter ID of the student: ");
+                        System.out.println("Enter ID of the user: ");
                         int studentId = input.nextInt();
+
+                        User user = (User) adminCtrl.getSingleRecord(studentId, 1);
+
+                        System.out.println("You have chosen user: " + user.getFirstName() + " " + user.getLastName());
+
 
                         System.out.println("Enter ID of the course: ");
                         int courseId = input.nextInt();
-                        adminCtrl.assignSingleCourse(studentId, courseId);
-                        break;
+                        Course course = (Course) adminCtrl.getSingleRecord(courseId, 3);
+                        System.out.println("You have chosen course: " + course.getDisplaytext());
+                        System.out.println("Are you sure you want to assign the course to " + user.getFirstName() + "?");
+                        System.out.println("[ 1 ] Yes \n[ 2 ] No");
+                        int confirm = input.nextInt();
+                        if(confirm == 1){
+                            adminCtrl.assignSingleCourse(studentId, courseId);
+                            System.out.println("Courses successfully assigned.");
+                            break;
+                        } else if(confirm == 2) {
+                            System.out.println("Reverting back to main menu...");
+                            break;
+                        } else {
+                            System.out.println("Invalid input.\n Reverting back to main menu");
+                            break;
+                        }
 
                     } catch(Exception ex){
                         System.out.println("An Error has occurred. Did not assign the course.");
@@ -160,14 +202,49 @@ public class AdminView {
         }
     }
 
-    public void deleteUserView() {
+    private void deleteUserView() {
         input.nextLine();
         System.out.println("\nEnter ID of the user you want to delete: ");
-        int userId = input.nextInt();
 
-        System.out.println("Are you sure, you want to delete ");
+        User user = (User) adminCtrl.getSingleRecord(input.nextInt(),1);
 
+        System.out.println("Are you sure, you want to delete " + user.getFirstName() + " " + user.getLastName() + "?");
+        System.out.println("[ 1 ] Yes \n[ 2 ] No");
+
+        int confirm = input.nextInt();
+
+        if(confirm == 1){
+            adminCtrl.deleteUser(user.getId());
+            System.out.println("User successfully deleted.");
+        } else if(confirm == 2) {
+            System.out.println("Reverting back to main menu...");
+        } else {
+            System.out.println("Invalid input.\n Reverting back to main menu");
+        }
     }
 
+    private void deleteReviewView() {
+        input.nextLine();
 
+        System.out.println("\nEnter ID of the review you want to delete: ");
+
+        Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 5);
+
+        System.out.println("Are you sure, you want to delete review\nRating:" + review.getRating() + "\nComment:  " + review.getComment());
+        System.out.println("[ 1 ] Yes \n[ 2 ] No");
+
+        int confirm = input.nextInt();
+
+        if(confirm == 1){
+            if(adminCtrl.softDeleteReview(0, review.getId())) {
+                System.out.println("Review successfully deleted.");
+            } else {
+                System.out.println("Review did not successfully get deleted.\nReverting back to main menu...");
+            }
+        } else if(confirm == 2) {
+            System.out.println("Reverting back to main menu...");
+        } else {
+            System.out.println("Invalid input.\n Reverting back to main menu");
+        }
+    }
 }

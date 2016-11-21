@@ -148,8 +148,8 @@ public abstract class UserController {
     /**
      * Soft deletes a specified review. Can be used in two situations.
      * Method used when a student wishes to delete his own review,
-     * or when an server wishes to delete any review.
-     * @param userId Used for first use-case. The specific student's userId. Pass '0' if server.
+     * or when a teacher or an admin wishes to delete any review.
+     * @param userId Used for first use-case. The specific student's userId. Pass '0' if teacher or admin.
      * @param reviewId The review ID of the review that is wished deleted.
      * @return Boolean value indicating whether review is deleted succesfully or not.
      */
@@ -186,6 +186,8 @@ public abstract class UserController {
 
         return isSoftDeleted;
     }
+
+
 
 
 }
