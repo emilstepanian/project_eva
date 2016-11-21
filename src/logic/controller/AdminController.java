@@ -18,6 +18,10 @@ import java.util.Map;
  */
 public class AdminController extends UserController {
 
+    /**
+     * Creates a new user.
+     * @param newUser A User object containing information about the new user.
+     */
     public void createUser(User newUser){
 
         try {
@@ -35,7 +39,7 @@ public class AdminController extends UserController {
                 DBWrapper.insertIntoRecords("user", userInfo);
                 System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + " is successfully registered.\n");
             } else {
-                System.out.println("An error has occured.");
+                System.out.println("An error has occurred.");
                 System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + " could not be registered");
                 System.out.println("\nReverting back to main menu...\n");
 
@@ -55,6 +59,11 @@ public class AdminController extends UserController {
 
     }
 
+    /**
+     * Assigns a study's courses to a user.
+     * @param userId The user ID who is assigning
+     * @param studyId The study ID the user is assigning to.
+     */
     public void assignStudy(int userId, int studyId){
         try {
             Map<String, String> whereParams = new HashMap<String, String>();
@@ -77,6 +86,12 @@ public class AdminController extends UserController {
 
     }
 
+    /**
+     * Assigns a single course to a user. Typically used for teachers,
+     * as they do not sign up to whole studies.
+     * @param userId The user ID who is assigning
+     * @param courseId The course ID the user is assigning to
+     */
     public void assignSingleCourse(int userId, int courseId){
 
         try {
@@ -92,6 +107,10 @@ public class AdminController extends UserController {
 
     }
 
+    /**
+     * Soft deletes a user.
+     * @param userId The ID of the user who needs to get deleted
+     */
     public void deleteUser(int userId){
         try {
             //First, delete from course_attendant table
@@ -119,8 +138,7 @@ public class AdminController extends UserController {
      * @param modification '1' for User object,
      *                     '2' for Study object,
      *                     '3' for Course object,
-     *                     '4' for Lecture object,
-     *                     '5' for Review object
+     *                     '4' for Review object
      * @return Returns the record in the specified object type.
      */
     public Object getSingleRecord(int id, int modification){
@@ -132,8 +150,6 @@ public class AdminController extends UserController {
             case 3:
                 return getSingleCourse(id);
             case 4:
-                return getSingleLecture(id);
-            case 5:
                 return getSingleReview(id);
             default:
                 return null;
@@ -141,7 +157,11 @@ public class AdminController extends UserController {
     }
 
 
-
+    /**
+     * Used by getSingleRecord() to return a User
+     * @param userId ID of the user to return
+     * @return Returns the specified User.
+     */
     private User getSingleUser(int userId){
         User user = new User();
 
@@ -164,6 +184,11 @@ public class AdminController extends UserController {
         return user;
     }
 
+    /**
+     * Used by getSingleRecord() to return a Study
+     * @param studyId ID of the study to return
+     * @return Returns the specified Study.
+     */
     private Study getSingleStudy(int studyId){
             Study study = new Study();
 
@@ -184,6 +209,11 @@ public class AdminController extends UserController {
         return study;
     }
 
+    /**
+     * Used by getSingleRecord() to return a Study
+     * @param courseId ID of the course to return
+     * @return Returns the specified Course.
+     */
     private Course getSingleCourse(int courseId){
         Course course = new Course();
 
@@ -206,30 +236,11 @@ public class AdminController extends UserController {
         return course;
     }
 
-    private Lecture getSingleLecture(int lectureId){
-        Lecture lecture = new Lecture();
-
-        try {
-            Map<String, String> whereParam = new HashMap<String, String>();
-            whereParam.put("id", String.valueOf(lectureId));
-
-            CachedRowSet rowSet = DBWrapper.getRecords("lecture", null, whereParam, null);
-            rowSet.next();
-            lecture.setLectureId(rowSet.getInt("id"));
-            lecture.setCourseId(rowSet.getString("course_id"));
-            lecture.setType(rowSet.getString("type"));
-            lecture.setStartDate(rowSet.getDate("start"));
-            lecture.setEndDate(rowSet.getDate("end"));
-            lecture.setLocation(rowSet.getString("location"));
-
-
-        } catch(SQLException ex){
-            System.out.println(ex.getMessage());
-
-        }
-        return lecture;
-    }
-
+    /**
+     * Used by getSingleRecord() to return a Review.
+     * @param reviewId ID of the review to return
+     * @return Returns the specified Review
+     */
     private Review getSingleReview(int reviewId){
         Review review = new Review();
 
@@ -254,6 +265,11 @@ public class AdminController extends UserController {
     }
 
 
+    /**
+     * Checks whether a User exists or does not in the database
+     * @param cbs_mail the CBS Mail address of the user
+     * @return Returns a boolean value indicating if user exists or not.
+     */
     private boolean userExists(String cbs_mail){
         Boolean userExists = false;
 

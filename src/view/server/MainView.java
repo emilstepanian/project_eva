@@ -17,6 +17,9 @@ public class MainView {
         main();
     }
 
+    /**
+     * The main menu of the server.
+     */
     private void main(){
         MainController mainCtrl = new MainController();
         AdminController adminCtrl = new AdminController();

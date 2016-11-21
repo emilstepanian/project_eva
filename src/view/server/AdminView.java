@@ -22,6 +22,12 @@ public class AdminView {
 
     }
 
+    /**
+     * Loads the admin who is authenticated and logged in and runs the main menu.
+     * @param currentAdmin The logged in admin
+     * @param adminCtrl The controller from MainView.
+     * @param input Scanner object from MainView.
+     */
     public void loadAdmin(User currentAdmin, AdminController adminCtrl, Scanner input){
         Boolean keepLoggedIn = true;
         this.currentAdmin = currentAdmin;
@@ -67,6 +73,9 @@ public class AdminView {
 
     }
 
+    /**
+     * View for creating a user
+     */
     private void createUserView(){
         User newUser = new User();
         do{
@@ -115,7 +124,9 @@ public class AdminView {
         adminCtrl.createUser(newUser);
     }
 
-
+    /**
+     * View for assigning courses to a user
+     */
     private void assignCoursesView(){
         input.nextLine();
         System.out.println("\nPress [ 1 ] to assign courses by study (used for students)");
@@ -202,6 +213,9 @@ public class AdminView {
         }
     }
 
+    /**
+     * View for deleting a user
+     */
     private void deleteUserView() {
         input.nextLine();
         System.out.println("\nEnter ID of the user you want to delete: ");
@@ -223,12 +237,15 @@ public class AdminView {
         }
     }
 
+    /**
+     * View for deleting a review
+     */
     private void deleteReviewView() {
         input.nextLine();
 
         System.out.println("\nEnter ID of the review you want to delete: ");
 
-        Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 5);
+        Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 4);
 
         System.out.println("Are you sure, you want to delete review\nRating:" + review.getRating() + "\nComment:  " + review.getComment());
         System.out.println("[ 1 ] Yes \n[ 2 ] No");

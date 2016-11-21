@@ -126,18 +126,51 @@ public class ClientEndpoints {
     }
 
 
+    /**
+     * Endpoint used to retrieve all personal reviews.
+     * @param studentId The ID of the student
+     * @return returns an ArrayList with all the review Objects as json
+     */
     @GET
     @Consumes("application/json")
-    @Path("review/personal/{userId}")
-    public Response getPersonalReviews(@PathParam("userId") int clientId){
+    @Path("review/personal/{studentId}")
+    public Response getPersonalReviews(@PathParam("studentId") int studentId){
 
-        ArrayList<Review> reviews = clientCtrl.getPersonalReviews(clientId);
+        ArrayList<Review> reviews = clientCtrl.getPersonalReviews(studentId);
 
         if (!reviews.isEmpty()) {
             return successResponse(200, reviews);
         } else {
             return errorResponse(404, "Failed. Resource not found.");
         }
+    }
+
+    /**
+     * Endpoint used to soft delete reviews. Pass '0' as user ID,
+     * if requester is a teacher.
+     * @param reviewId The ID of the review wished to be deleted
+     * @param userId The ID of the student who wrote the review.
+     * @return Returns a server response saying whether the delete was successful or not.
+     */
+    @POST
+    @Consumes("application/json")
+    @Path("review/{reviewId}/delete/{userId}")
+    public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("userId") int userId){
+        if(userId == 0){
+            if(clientCtrl.softDeleteReview(0, reviewId)){
+                return successResponse(200, "Review deleted");
+            } else {
+                return errorResponse(500, "Review not deleted. Internal server error");
+            }
+
+        } else {
+            if(clientCtrl.softDeleteReview(userId, reviewId)){
+                return successResponse(200, "Review deleted");
+            } else {
+                return errorResponse(500, "Review not deleted. Internal server error");
+            }
+        }
+
     }
 
 
