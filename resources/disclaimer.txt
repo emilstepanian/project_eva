@@ -1,0 +1,4 @@
+CBSParser
+- Ved start af server, melder klassen fejl ved faget "The Robot Armada is Taking Over, What's Next, Manager? (LA)"
+  grundet, at navnet indeholder en apostrof, og vi ikke håndterer escapecharacters.
+
