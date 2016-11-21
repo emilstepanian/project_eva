@@ -226,7 +226,7 @@ public class AdminController extends UserController {
             course.setId(rowSet.getString("id"));
             //course.setEvents(rowSet.getString("shortname"));
             course.setCode(rowSet.getString("code"));
-            course.setDisplaytext(rowSet.getString("displaytext"));
+            course.setDisplaytext(rowSet.getString("name"));
 
 
         } catch(SQLException ex){

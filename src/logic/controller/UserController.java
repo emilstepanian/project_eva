@@ -186,8 +186,4 @@ public abstract class UserController {
 
         return isSoftDeleted;
     }
-
-
-
-
 }

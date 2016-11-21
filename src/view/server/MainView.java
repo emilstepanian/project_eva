@@ -29,8 +29,6 @@ public class MainView {
 
         System.out.println("Project_eva v. 1.0 running");
         System.out.println("Visit: http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/");
-        System.out.println("Press [ 1 ] to log in as admin");
-        System.out.println("Press [ 0 ] to stop server\n");
 
         while(keepSystemRunning){
             System.out.println("Press [ 1 ] to log in as admin");
@@ -39,7 +37,7 @@ public class MainView {
 
             switch (choice) {
                 case 0:
-                    System.out.println("Server shutting down.");
+                    System.out.println("Server shutting down...");
                     System.out.println("Server stopped.");
                     keepSystemRunning = false;
                     System.exit(0);
@@ -51,11 +49,12 @@ public class MainView {
                     String mail = input.nextLine();
 
                     System.out.println("Enter password: ");
-                    String password = Digester.hash(input.nextLine());
+                    String password = input.nextLine();
+                    String hashedPassword = Digester.hash(password);
 
                     try {
 
-                        User admin = mainCtrl.authenticate(mail, password);
+                        User admin = mainCtrl.authenticate(mail, hashedPassword);
 
                         if (admin.getType().equals("admin")) {
                             System.out.println("\nLog in granted.");

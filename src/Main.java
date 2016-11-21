@@ -33,9 +33,9 @@ public class Main {
 
 
 
-        } catch(Exception e){
+        } catch(Exception ex){
 
-
+            System.out.println(ex.getMessage());
 
         }
     }

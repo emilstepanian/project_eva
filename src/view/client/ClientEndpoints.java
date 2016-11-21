@@ -54,7 +54,7 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("course/{userType}/{userId}")
+    @Path("course/user/{userType}/{userId}")
     public Response getCourses(@PathParam("userType") String clientType, @PathParam("userId") int clientId){
 
         ArrayList<Course> courses = clientCtrl.getCourses(clientId);
@@ -73,7 +73,7 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("course/{courseCode}")
+    @Path("course/entity/{courseCode}")
     public Response getCourseStatistics(@PathParam("courseCode")String courseCode){
         Map<String, String> courseStatistics = Statistics.getCourseStatistics(clientCtrl, courseCode);
 
@@ -92,7 +92,7 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("course/{lectureId}/{courseId}")
+    @Path("course/entity/{lectureId}/{courseId}")
     public Response getLectureStatistics(@PathParam("lectureId")int lectureId, @PathParam("courseId") int courseId){
         Map<String, String> lectureStatistics = Statistics.getLectureStatistics(clientCtrl, courseId, lectureId);
 
@@ -113,7 +113,7 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("review/lecture/{userType}/{lectureId}")
+    @Path("review/entity/lecture/{userType}/{lectureId}")
     public Response getLectureReviews(@PathParam("userType") String clientType, @PathParam("lectureId") int lectureId){
 
         ArrayList<Review> reviews = clientCtrl.getLectureReviews(lectureId);
@@ -133,7 +133,7 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("review/personal/{studentId}")
+    @Path("review/user/{studentId}")
     public Response getPersonalReviews(@PathParam("studentId") int studentId){
 
         ArrayList<Review> reviews = clientCtrl.getPersonalReviews(studentId);
@@ -154,7 +154,7 @@ public class ClientEndpoints {
      */
     @POST
     @Consumes("application/json")
-    @Path("review/{reviewId}/delete/{userId}")
+    @Path("review/entity/{reviewId}/delete({userId})")
     public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("userId") int userId){
         if(userId == 0){
             if(clientCtrl.softDeleteReview(0, reviewId)){
