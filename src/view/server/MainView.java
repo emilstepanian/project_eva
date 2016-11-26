@@ -3,6 +3,7 @@ package view.server;
 import logic.controller.AdminController;
 import logic.controller.MainController;
 import logic.misc.ConfigLoader;
+import logic.misc.I18NLoader;
 import model.user.User;
 import security.Digester;
 
@@ -27,28 +28,28 @@ public class MainView {
         Scanner input = new Scanner(System.in);
         Boolean keepSystemRunning = true;
 
-        System.out.println("Project_eva v. 1.0 running");
-        System.out.println("Visit: http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/");
+        System.out.println(ConfigLoader.SERVER_TITLE + " v. " + ConfigLoader.SERVER_VERSION + " " + I18NLoader.RUNNING_WORD);
+        System.out.println(I18NLoader.VISIT_WORD + ": http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/");
 
         while(keepSystemRunning){
-            System.out.println("Press [ 1 ] to log in as admin");
-            System.out.println("Press [ 0 ] to stop server\n");
+            System.out.println(I18NLoader.PRESS_WORD + " [ 1 ] " + I18NLoader.TO_LOG_IN_AS_ADMIN);
+            System.out.println(I18NLoader.PRESS_WORD + " [ 0 ] " + I18NLoader.TO_STOP_SERVER);
             int choice = input.nextInt();
 
             switch (choice) {
                 case 0:
-                    System.out.println("Server shutting down...");
-                    System.out.println("Server stopped.");
+                    System.out.println(I18NLoader.SERVER_SHUTTING_DOWN + "...");
+                    System.out.println(I18NLoader.SERVER_STOPPED + ".");
                     keepSystemRunning = false;
                     System.exit(0);
                     break;
 
                 case 1:
                     input.nextLine();
-                    System.out.println("Enter mail: ");
+                    System.out.println(I18NLoader.ENTER_WORD + " " + I18NLoader.MAIL_WORD+ ": ");
                     String mail = input.nextLine();
 
-                    System.out.println("Enter password: ");
+                    System.out.println(I18NLoader.ENTER_WORD + " " + I18NLoader.PASSWORD_WORD+ ": ");
                     String password = input.nextLine();
                     String hashedPassword = Digester.hash(password);
 
@@ -56,17 +57,17 @@ public class MainView {
 
                         User admin = mainCtrl.authenticate(mail, hashedPassword);
 
-                        if (admin.getType().equals("admin")) {
-                            System.out.println("\nLog in granted.");
-                            System.out.println("Logging in..\n");
+                        if (admin.getType().equals(ConfigLoader.USER_TYPE_VALUE_ADMIN)) {
+                            System.out.println("\n" + I18NLoader.LOGIN_GRANTED + ".");
+                            System.out.println(I18NLoader.LOGGING_IN + "..\n");
 
                             adminView.loadAdmin(admin, adminCtrl, input);
 
                         } else if (admin == null){
-                            System.out.println("Admin not found.\n");
+                            System.out.println(I18NLoader.ADMIN_NOT_FOUND + ".\n");
 
                         } else {
-                            System.out.println("User not admin.\n");
+                            System.out.println(I18NLoader.USER_NOT_ADMIN + ".\n");
                         }
 
                     } catch (Exception ex) {
@@ -75,7 +76,7 @@ public class MainView {
                     }
                     break;
                 default:
-                    System.out.println("Wrong key pressed.\n");
+                    System.out.println(I18NLoader.INVALID_KEY_PRESSED + ".\n");
 
             }
         }

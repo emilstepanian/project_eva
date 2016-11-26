@@ -83,7 +83,7 @@ public class CBSParser {
 
                 /*
                 Check if the Study is already in the database.
-                If not, then insert it.
+                If not, then insert it. Values are specific to CBS' API, and therefore not interchangeable.
                  */
                 if(!duplicatesCheck.contains(obj.get("shortname").toString().replace("\"", "").substring(0,5))){
 
@@ -110,7 +110,7 @@ public class CBSParser {
             Map<String, String> studyAttributes = new HashMap<String, String>();
             Map<String, String> courseMap = new HashMap<String, String>();
 
-            CachedRowSet rs = DBWrapper.getRecords("study", new String[]{"id","shortname"}, null, null);
+            CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.STUDY_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES,ConfigLoader.STUDY_SHORTNAME_COLUMN}, null, null);
 
 
         /*
@@ -121,9 +121,9 @@ public class CBSParser {
             while(rs.next()){
 
 
-                String substring = rs.getString("shortname").substring(0,5);
+                String substring = rs.getString(ConfigLoader.STUDY_SHORTNAME_COLUMN).substring(0,5);
 
-                studyAttributes.put(substring, rs.getString("id"));
+                studyAttributes.put(substring, rs.getString(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
             }
 
 
@@ -137,11 +137,11 @@ public class CBSParser {
 
                 if(studyAttributes.containsKey(substring)){
 
-                    courseMap.put("code", course.getDisplaytext());
-                    courseMap.put("name", course.getId());
-                    courseMap.put("study_id", studyAttributes.get(substring));
+                    courseMap.put(ConfigLoader.COURSE_CODE_COLUMN, course.getDisplaytext());
+                    courseMap.put(ConfigLoader.COURSE_NAME_COLUMN, course.getId());
+                    courseMap.put(ConfigLoader.COURSE_STUDY_ID_COLUMN, studyAttributes.get(substring));
 
-                    DBWrapper.insertIntoRecords("course", courseMap);
+                    DBWrapper.insertIntoRecords(ConfigLoader.COURSE_TABLE, courseMap);
                 }
             }
 
@@ -166,7 +166,7 @@ public class CBSParser {
         BufferedReader br;
         Map<String, String> lectureMap;
 
-        CachedRowSet rs = DBWrapper.getRecords("course", new String[]{"id", "name"}, null, null);
+        CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES, ConfigLoader.COURSE_NAME_COLUMN}, null, null);
 
         try{
 
@@ -180,7 +180,7 @@ public class CBSParser {
             while(rs.next()){
 
 
-                String name = rs.getString("name");
+                String name = rs.getString(ConfigLoader.COURSE_NAME_COLUMN);
 
 
                 for (Course course : courseArray){
@@ -200,15 +200,15 @@ public class CBSParser {
                         for (Lecture lecture : course.getEvents()){
                             lectureMap = new HashMap<String, String>();
 
-                            lectureMap.put("course_id", course.getId());
-                            lectureMap.put("type", lecture.getType());
-                            lectureMap.put("description", lecture.getDescription());
+                            lectureMap.put(ConfigLoader.LECTURE_COURSE_ID_COLUMN, course.getId());
+                            lectureMap.put(ConfigLoader.LECTURE_TYPE_COLUMN, lecture.getType());
+                            lectureMap.put(ConfigLoader.LECTURE_DESCRIPTION_COLUMN, lecture.getDescription());
 
-                            lectureMap.put("start", convertToDateTime(lecture.getStart()));
-                            lectureMap.put("end", convertToDateTime(lecture.getEnd()));
-                            lectureMap.put("location", lecture.getLocation());
+                            lectureMap.put(ConfigLoader.LECTURE_START_DATE_COLUMN, convertToDateTime(lecture.getStart()));
+                            lectureMap.put(ConfigLoader.LECTURE_END_DATE_COLUMN, convertToDateTime(lecture.getEnd()));
+                            lectureMap.put(ConfigLoader.LECTURE_LOCATION_COLUMN, lecture.getLocation());
 
-                            DBWrapper.insertIntoRecords("lecture", lectureMap);
+                            DBWrapper.insertIntoRecords(ConfigLoader.LECTURE_TABLE, lectureMap);
 
                         }
                     }

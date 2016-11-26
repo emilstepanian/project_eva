@@ -30,9 +30,9 @@ public class Statistics {
             lectureStatistics = new HashMap<String, String>();
             int courseAttendants = getNumberOfCourseParticipants(courseId);
 
-            lectureStatistics.put("Course Attendants", String.valueOf(courseAttendants));
-            lectureStatistics.put("Review Participation", String.valueOf(calculateReviewParticipation(clientCtrl, lectureId, courseAttendants)));
-            lectureStatistics.put("Lecture Average", String.valueOf(calculateLectureAverage(clientCtrl, lectureId)));
+            lectureStatistics.put(I18NLoader.COURSE_ATTENDANTS_MSG, String.valueOf(courseAttendants));
+            lectureStatistics.put(I18NLoader.REVIEW_PARTICIPATION_MSG, String.valueOf(calculateReviewParticipation(clientCtrl, lectureId, courseAttendants)));
+            lectureStatistics.put(I18NLoader.LECTURE_AVERAGE_MSG, String.valueOf(calculateLectureAverage(clientCtrl, lectureId)));
 
         } catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -51,7 +51,7 @@ public class Statistics {
         Map<String, String> courseStatistics = null;
         try {
             courseStatistics = new HashMap<String, String>();
-            courseStatistics.put("Course Average", String.valueOf(calculateCourseAverage(clientCtrl, courseId)));
+            courseStatistics.put(I18NLoader.COURSE_AVERAGE_MSG, String.valueOf(calculateCourseAverage(clientCtrl, courseId)));
 
         } catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -69,9 +69,9 @@ public class Statistics {
      * @return Returns an Integer with the amount of attendants
      */
     private static int getNumberOfCourseParticipants(int courseId) {
-        String table = "course_attendant";
+        String table = ConfigLoader.COURSEATTENDANTS_TABLE;
         Map<String, String> whereStmt = new HashMap<String, String>();
-        whereStmt.put("course_id", String.valueOf(courseId));
+        whereStmt.put(ConfigLoader.COURSEATTENDANTS_COURSE_ID_COLUMN, String.valueOf(courseId));
 
         int courseAttendants = 0;
 

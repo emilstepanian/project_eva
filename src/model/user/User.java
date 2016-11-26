@@ -12,14 +12,6 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public User(int id, String cbsMail, String password, String type, String firstName, String lastName) {
-        this.id = id;
-        this.cbsMail = cbsMail;
-        this.password = password;
-        this.type = type;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     //Must be defined
     public User() {

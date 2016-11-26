@@ -1,6 +1,9 @@
 package logic.controller;
 
+import com.sun.deploy.config.Config;
 import dal.DBWrapper;
+import logic.misc.ConfigLoader;
+import logic.misc.I18NLoader;
 import model.entity.Course;
 import model.entity.Lecture;
 import model.entity.Review;
@@ -30,28 +33,25 @@ public class AdminController extends UserController {
 
                 Map<String, String> userInfo = new HashMap<String, String>();
 
-                userInfo.put("firstName", newUser.getFirstName());
-                userInfo.put("lastName", newUser.getLastName());
-                userInfo.put("cbs_mail", newUser.getCbsMail());
-                userInfo.put("password", newUser.getPassword());
-                userInfo.put("type", newUser.getType());
+                userInfo.put(ConfigLoader.USER_FIRSTNAME_COLUMN, newUser.getFirstName());
+                userInfo.put(ConfigLoader.USER_LASTNAME_COLUMN, newUser.getLastName());
+                userInfo.put(ConfigLoader.USER_CBSMAIL_COLUMN, newUser.getCbsMail());
+                userInfo.put(ConfigLoader.USER_PASSWORD_COLUMN, newUser.getPassword());
+                userInfo.put(ConfigLoader.USER_TYPE_COLUMN, newUser.getType());
 
-                DBWrapper.insertIntoRecords("user", userInfo);
-                System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + " is successfully registered.\n");
+                DBWrapper.insertIntoRecords(ConfigLoader.USER_TABLE, userInfo);
+                System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + I18NLoader.IS_SUCCESFULLY_REGISTERED);
             } else {
-                System.out.println("An error has occurred.");
-                System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + " could not be registered");
-                System.out.println("\nReverting back to main menu...\n");
+                System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + I18NLoader.COULD_NOT_BE_REGISTERED);
+                catchMessage(null);
 
             }
 
 
         } catch(SQLException ex){
 
-            System.out.println("An error has occured.");
-            System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + " could not be registered");
-            System.out.println(ex.getMessage());
-            System.out.println("\nReverting back to main menu...\n");
+            System.out.println(newUser.getFirstName() + " " + newUser.getLastName() + I18NLoader.COULD_NOT_BE_REGISTERED);
+            catchMessage(ex);
 
         }
 
@@ -68,18 +68,17 @@ public class AdminController extends UserController {
         try {
             Map<String, String> whereParams = new HashMap<String, String>();
 
-            whereParams.put("study_id", String.valueOf(studyId));
-            String[] attributes = {"id"};
+            whereParams.put(ConfigLoader.COURSE_STUDY_ID_COLUMN, String.valueOf(studyId));
+            String[] attributes = {ConfigLoader.ID_COLUMN_OF_ALL_TABLES};
 
-            CachedRowSet rowSet = DBWrapper.getRecords("course", attributes, whereParams, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, attributes, whereParams, null);
 
             while(rowSet.next()){
-                assignSingleCourse(userId, rowSet.getInt("id"));
+                assignSingleCourse(userId, rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
             }
 
         } catch(Exception ex){
-
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
 
         }
 
@@ -96,12 +95,12 @@ public class AdminController extends UserController {
 
         try {
             Map<String, String> updateParams = new HashMap<String, String>();
-            updateParams.put("user_id", String.valueOf(userId));
-            updateParams.put("course_id", String.valueOf(courseId));
-            DBWrapper.insertIntoRecords("course_attendant", updateParams);
+            updateParams.put(ConfigLoader.COURSEATTENDANTS_USER_ID_COLUMN, String.valueOf(userId));
+            updateParams.put(ConfigLoader.COURSEATTENDANTS_COURSE_ID_COLUMN, String.valueOf(courseId));
+            DBWrapper.insertIntoRecords(ConfigLoader.COURSEATTENDANTS_TABLE, updateParams);
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
 
         }
 
@@ -115,17 +114,17 @@ public class AdminController extends UserController {
         try {
             //First, delete from course_attendant table
             Map<String, String> courseAttendantWhereParam = new HashMap<String, String>();
-            courseAttendantWhereParam.put("user_id", String.valueOf(userId));
-            DBWrapper.deleteRecords("course_attendant", courseAttendantWhereParam);
+            courseAttendantWhereParam.put(ConfigLoader.COURSEATTENDANTS_USER_ID_COLUMN, String.valueOf(userId));
+            DBWrapper.deleteRecords(ConfigLoader.COURSEATTENDANTS_TABLE, courseAttendantWhereParam);
 
             //Next, delete from user table
             Map<String, String > userWhereParam = new HashMap<String, String>();
-            userWhereParam.put("id", String.valueOf(userId));
-            DBWrapper.deleteRecords("user", userWhereParam);
+            userWhereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(userId));
+            DBWrapper.deleteRecords(ConfigLoader.USER_TABLE, userWhereParam);
 
         } catch(Exception ex){
 
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
         }
 
     }
@@ -153,6 +152,7 @@ public class AdminController extends UserController {
                 return getSingleReview(id);
             default:
                 return null;
+
         }
     }
 
@@ -167,18 +167,18 @@ public class AdminController extends UserController {
 
         try {
             Map<String, String> whereParam = new HashMap<String, String>();
-            whereParam.put("id", String.valueOf(userId));
+            whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(userId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("user", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.USER_TABLE, null, whereParam, null);
             rowSet.next();
-            user.setId(rowSet.getInt("id"));
-            user.setFirstName(rowSet.getString("firstName"));
-            user.setLastName(rowSet.getString("lastName"));
-            user.setCbsMail(rowSet.getString("cbs_mail"));
-            user.setType(rowSet.getString("type"));
+            user.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+            user.setFirstName(rowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN));
+            user.setLastName(rowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN));
+            user.setCbsMail(rowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
+            user.setType(rowSet.getString(ConfigLoader.USER_TYPE_COLUMN));
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
 
         }
         return user;
@@ -194,16 +194,16 @@ public class AdminController extends UserController {
 
         try {
             Map<String, String> whereParam = new HashMap<String, String>();
-            whereParam.put("id", String.valueOf(studyId));
+            whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(studyId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("study", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.STUDY_TABLE, null, whereParam, null);
             rowSet.next();
-            study.setId(rowSet.getInt("id"));
-            study.setShortname(rowSet.getString("shortname"));
-            study.setName(rowSet.getString("name"));
+            study.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+            study.setShortname(rowSet.getString(ConfigLoader.STUDY_SHORTNAME_COLUMN));
+            study.setName(rowSet.getString(ConfigLoader.STUDY_NAME_COLUMN));
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
 
         }
         return study;
@@ -219,18 +219,19 @@ public class AdminController extends UserController {
 
         try {
             Map<String, String> whereParam = new HashMap<String, String>();
-            whereParam.put("id", String.valueOf(courseId));
+            whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(courseId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("course", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, whereParam, null);
             rowSet.next();
-            course.setId(rowSet.getString("id"));
+            course.setId(rowSet.getString(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
             //course.setEvents(rowSet.getString("shortname"));
-            course.setCode(rowSet.getString("code"));
-            course.setDisplaytext(rowSet.getString("name"));
+            course.setCode(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
+            course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
 
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
+
 
         }
         return course;
@@ -246,19 +247,19 @@ public class AdminController extends UserController {
 
         try {
             Map<String, String> whereParam = new HashMap<String, String>();
-            whereParam.put("id", String.valueOf(reviewId));
+            whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(reviewId));
 
-            CachedRowSet rowSet = DBWrapper.getRecords("review", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.REVIEW_TABLE, null, whereParam, null);
             rowSet.next();
-            review.setId(rowSet.getInt("id"));
-            review.setUserId(rowSet.getInt("user_id"));
-            review.setLectureId(rowSet.getInt("lecture_id"));
-            review.setRating(rowSet.getInt("rating"));
-            review.setComment(rowSet.getString("comment"));
+            review.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+            review.setUserId(rowSet.getInt(ConfigLoader.REVIEW_USER_ID_COLUMN));
+            review.setLectureId(rowSet.getInt(ConfigLoader.REVIEW_LECTURE_ID_COLUMN));
+            review.setRating(rowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN));
+            review.setComment(rowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
 
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
 
         }
         return review;
@@ -274,20 +275,31 @@ public class AdminController extends UserController {
         Boolean userExists = false;
 
         Map<String, String> whereParam = new HashMap<String, String>();
-        whereParam.put("cbs_mail", cbs_mail);
+        whereParam.put(ConfigLoader.USER_CBSMAIL_COLUMN, cbs_mail);
 
         try {
 
-            CachedRowSet rowSet = DBWrapper.getRecords("user", null, whereParam, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.USER_TABLE, null, whereParam, null);
 
             if(rowSet.size() != 0){
                 userExists = true;
             }
         } catch(Exception ex){
 
-            System.out.println(ex.getMessage());
+            catchMessage(ex);
+
         }
         return userExists;
+    }
+
+    private void catchMessage(Exception ex){
+        System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
+
+        if (ex != null) {
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
+
     }
 
 }

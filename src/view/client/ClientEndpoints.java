@@ -3,6 +3,8 @@ package view.client;
 import com.google.gson.Gson;
 import logic.controller.MainController;
 import logic.controller.ClientController;
+import logic.misc.ConfigLoader;
+import logic.misc.I18NLoader;
 import logic.misc.Statistics;
 import model.entity.Course;
 import model.entity.Review;
@@ -41,7 +43,7 @@ public class ClientEndpoints {
         if(clientReturned != null){
             return successResponse(200, clientReturned);
         } else {
-            return errorResponse(401, "User login denied");
+            return errorResponse(401, I18NLoader.USER_LOGIN_DENIED);
         }
     }
 
@@ -62,7 +64,7 @@ public class ClientEndpoints {
         if (!courses.isEmpty()){
             return successResponse(200, courses);
         } else {
-            return errorResponse(404, "Failed. Resource not found");
+            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -80,7 +82,7 @@ public class ClientEndpoints {
         if(!courseStatistics.isEmpty() && courseStatistics == null){
             return successResponse(200, courseStatistics);
         } else {
-            return errorResponse(404, "Failed. Resource not found");
+            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -99,7 +101,7 @@ public class ClientEndpoints {
         if(!lectureStatistics.isEmpty() && lectureStatistics == null){
             return successResponse(200, lectureStatistics);
         } else {
-            return errorResponse(404, "Failed. Resource not found");
+            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -121,7 +123,7 @@ public class ClientEndpoints {
         if (!reviews.isEmpty()) {
             return successResponse(200, reviews);
         } else {
-            return errorResponse(404, "Failed. Resource not found.");
+            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -141,7 +143,7 @@ public class ClientEndpoints {
         if (!reviews.isEmpty()) {
             return successResponse(200, reviews);
         } else {
-            return errorResponse(404, "Failed. Resource not found.");
+            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -158,16 +160,16 @@ public class ClientEndpoints {
     public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("userId") int userId){
         if(userId == 0){
             if(clientCtrl.softDeleteReview(0, reviewId)){
-                return successResponse(200, "Review deleted");
+                return successResponse(200, I18NLoader.REVIEW_DELETED);
             } else {
-                return errorResponse(500, "Review not deleted. Internal server error");
+                return errorResponse(500, I18NLoader.REVIEW_NOT_DELETED);
             }
 
         } else {
             if(clientCtrl.softDeleteReview(userId, reviewId)){
-                return successResponse(200, "Review deleted");
+                return successResponse(200, I18NLoader.REVIEW_DELETED);
             } else {
-                return errorResponse(500, "Review not deleted. Internal server error");
+                return errorResponse(500, I18NLoader.REVIEW_NOT_DELETED);
             }
         }
 
@@ -182,7 +184,7 @@ public class ClientEndpoints {
      * @return The generated response with the error message
      */
     protected Response errorResponse(int status, String message) {
-        return Response.status(status).entity(new Gson().toJson(Digester.encrypt("{\"message\": \"" + message + "\"}"))).build();
+        return Response.status(status).entity(new Gson().toJson(Digester.encrypt("{\"" + I18NLoader.MESSAGE_WORD + "\": \"" + message + "\"}"))).build();
     }
 
     /**

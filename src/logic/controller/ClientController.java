@@ -1,5 +1,6 @@
 package logic.controller;
 
+import logic.misc.ConfigLoader;
 import model.entity.Review;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ClientController extends UserController {
      */
     public ArrayList<Review> getPersonalReviews(int userId) {
         Map<String, String> whereParams = new HashMap<String, String>();
-        whereParams.put("user_id", String.valueOf(userId));
+        whereParams.put(ConfigLoader.REVIEW_USER_ID_COLUMN, String.valueOf(userId));
 
         return getReviews(whereParams);
     }

@@ -1,7 +1,9 @@
 package logic.controller;
 
 import dal.DBWrapper;
+import logic.misc.ConfigLoader;
 import logic.misc.CustomLogger;
+import logic.misc.I18NLoader;
 import model.entity.Course;
 import model.entity.Lecture;
 import model.entity.Review;
@@ -31,17 +33,17 @@ public abstract class UserController {
             Map<String, String> whereParams = new HashMap<String, String>();
             Map<String, String> joins = new HashMap<String, String>();
 
-            whereParams.put("course_attendant.user_id", String.valueOf(userId));
-            joins.put("course_attendant", "course_id");
+            whereParams.put(ConfigLoader.COURSEATTENDANTS_TABLE + "." + ConfigLoader.COURSEATTENDANTS_USER_ID_COLUMN, String.valueOf(userId));
+            joins.put(ConfigLoader.COURSEATTENDANTS_TABLE, ConfigLoader.COURSEATTENDANTS_COURSE_ID_COLUMN);
 
 
-            CachedRowSet rowSet = DBWrapper.getRecords("course", null, whereParams, joins);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, whereParams, joins);
 
             while (rowSet.next()){
                 Course course = new Course();
 
-                course.setDisplaytext(rowSet.getString("name"));
-                course.setCode("code");
+                course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
+                course.setCode(ConfigLoader.COURSE_CODE_COLUMN);
                 course.setEvents(getLectures(course.getCode()));
 
                 courses.add(course);
@@ -49,7 +51,7 @@ public abstract class UserController {
 
         } catch(SQLException ex){
             System.out.println(ex.getMessage());
-            CustomLogger.log(ex,2,"Could not retrieve courses at getCourses()");
+            CustomLogger.log(ex,2, I18NLoader.COULD_NOT_RETRIEVE_COURSES);
         }
 
         return courses;
@@ -68,20 +70,20 @@ public abstract class UserController {
         try {
             Map<String,String> whereParams = new HashMap<String, String>();
 
-            whereParams.put("course_id", courseCode);
+            whereParams.put(ConfigLoader.LECTURE_COURSE_ID_COLUMN, courseCode);
 
-            CachedRowSet rowSet = DBWrapper.getRecords("lecture", null, whereParams, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, whereParams, null);
 
             while (rowSet.next()){
                 Lecture lecture = new Lecture();
 
-                lecture.setLectureId(rowSet.getInt("id"));
-                lecture.setCourseId(rowSet.getString("course_id"));
-                lecture.setStartDate(rowSet.getTimestamp("start"));
-                lecture.setEndDate(rowSet.getTimestamp("end"));
-                lecture.setType(rowSet.getString("type"));
-                lecture.setLocation(rowSet.getString("location"));
-                lecture.setDescription(rowSet.getString("description"));
+                lecture.setLectureId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+                lecture.setCourseId(rowSet.getString(ConfigLoader.LECTURE_COURSE_ID_COLUMN));
+                lecture.setStartDate(rowSet.getTimestamp(ConfigLoader.LECTURE_START_DATE_COLUMN));
+                lecture.setEndDate(rowSet.getTimestamp(ConfigLoader.LECTURE_END_DATE_COLUMN));
+                lecture.setType(rowSet.getString(ConfigLoader.LECTURE_TYPE_COLUMN));
+                lecture.setLocation(rowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN));
+                lecture.setDescription(rowSet.getString(ConfigLoader.LECTURE_DESCRIPTION_COLUMN));
 
                 lectureArrayList.add(lecture);
             }
@@ -90,7 +92,7 @@ public abstract class UserController {
 
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
-            CustomLogger.log(ex, 2, "Could not retrieve lectures at getLectures()");
+            CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_RETRIEVE_LECTURES);
         }
 
         return lectureArray;
@@ -103,7 +105,7 @@ public abstract class UserController {
      */
     public ArrayList<Review> getLectureReviews(int lectureId) {
         Map<String, String> whereParams = new HashMap<String, String>();
-        whereParams.put("lecture_id", String.valueOf(lectureId));
+        whereParams.put(ConfigLoader.REVIEW_LECTURE_ID_COLUMN, String.valueOf(lectureId));
 
         return getReviews(whereParams);
     }
@@ -119,25 +121,26 @@ public abstract class UserController {
 
         try {
 
-            whereParams.put("is_deleted", "0");
-            String[] attributes = {"id", "user_id", "lecture_id", "rating", "comment"};
+            whereParams.put(ConfigLoader.REVIEW_IS_DELETED_COLUMN, ConfigLoader.REVIEW_IS_DELETED_VALUE_FALSE);
+            String[] attributes = {ConfigLoader.ID_COLUMN_OF_ALL_TABLES, ConfigLoader.REVIEW_USER_ID_COLUMN,
+                    ConfigLoader.REVIEW_LECTURE_ID_COLUMN, ConfigLoader.REVIEW_RATING_COLUMN, ConfigLoader.REVIEW_COMMENT_COLUMN};
 
-            CachedRowSet rowSet = DBWrapper.getRecords("review", attributes, whereParams, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.REVIEW_TABLE, attributes, whereParams, null);
 
             while (rowSet.next()) {
                 Review review = new Review();
-                review.setId(rowSet.getInt("id"));
-                review.setUserId(rowSet.getInt("user_id"));
-                review.setLectureId(rowSet.getInt("lecture_id"));
-                review.setRating(rowSet.getInt("rating"));
-                review.setComment(rowSet.getString("comment"));
+                review.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+                review.setUserId(rowSet.getInt(ConfigLoader.REVIEW_USER_ID_COLUMN));
+                review.setLectureId(rowSet.getInt(ConfigLoader.REVIEW_LECTURE_ID_COLUMN));
+                review.setRating(rowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN));
+                review.setComment(rowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
 
                 reviews.add(review);
             }
 
         } catch(SQLException ex){
             System.out.println(ex.getMessage());
-            CustomLogger.log(ex, 2, "Could not retrieve reviews from getReviews()");
+            CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_RETRIEVE_REVIEWS);
 
         }
 
@@ -159,7 +162,7 @@ public abstract class UserController {
         try {
             Map<String, String> isDeletedField = new HashMap<String, String>();
 
-            isDeletedField.put("is_deleted", "1");
+            isDeletedField.put(ConfigLoader.REVIEW_IS_DELETED_COLUMN, ConfigLoader.REVIEW_IS_DELETED_VALUE_TRUE);
 
             Map<String, String> whereParams = new HashMap<String, String>();
 
@@ -168,18 +171,17 @@ public abstract class UserController {
             If Admin is deleting, he simply passes 0 as reviewId parameter.
              */
             if(userId != 0) {
-                whereParams.put("user_id", String.valueOf(userId));
+                whereParams.put(ConfigLoader.REVIEW_USER_ID_COLUMN, String.valueOf(userId));
             }
 
-            whereParams.put("id", String.valueOf(reviewId));
+            whereParams.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(reviewId));
 
-            DBWrapper.updateRecords("review", isDeletedField, whereParams);
+            DBWrapper.updateRecords(ConfigLoader.REVIEW_TABLE, isDeletedField, whereParams);
             isSoftDeleted = true;
         } catch(Exception ex){
 
             System.out.println(ex.getMessage());
-            CustomLogger.log(ex, 2, "(softDeleteReview() could not " +
-                    "soft delete review with reviewId " +String.valueOf(reviewId));
+            CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_SOFT_DELETE_REVIEW_WITH_REVIEWID + String.valueOf(reviewId));
             isSoftDeleted = false;
 
         }

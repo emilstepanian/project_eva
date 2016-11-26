@@ -14,6 +14,11 @@ import java.util.Set;
  */
 public class ConfigLoader {
 
+    /*
+    System Settings
+     */
+    public static String SERVER_TITLE;
+    public static String SERVER_VERSION;
     public static String DB_TYPE;
     public static String DB_HOST;
     public static String DB_PORT;
@@ -29,6 +34,63 @@ public class ConfigLoader {
     public static String SERVER_PORT;
     public static String DEBUG;
     public static String ENCRYPTION;
+    public static String LANGUAGE;
+
+
+    /*
+    Table informations
+     */
+
+    public static String ID_COLUMN_OF_ALL_TABLES;
+
+    //Table and column names of table containing users
+    public static String USER_TABLE;
+    public static String USER_FIRSTNAME_COLUMN;
+    public static String USER_LASTNAME_COLUMN;
+    public static String USER_CBSMAIL_COLUMN;
+    public static String USER_TYPE_COLUMN;
+    public static String USER_PASSWORD_COLUMN;
+    public static String USER_TYPE_VALUE_STUDENT;
+    public static String USER_TYPE_VALUE_TEACHER;
+    public static String USER_TYPE_VALUE_ADMIN;
+
+    //Table and column names of table containing courses
+    public static String COURSE_TABLE;
+    public static String COURSE_STUDY_ID_COLUMN;
+    public static String COURSE_CODE_COLUMN;
+    public static String COURSE_NAME_COLUMN;
+
+    //Table and column names of table containing the connections between users and the courses they are attending:
+    public static String COURSEATTENDANTS_TABLE;
+    public static String COURSEATTENDANTS_USER_ID_COLUMN;
+    public static String COURSEATTENDANTS_COURSE_ID_COLUMN;
+
+    //Table and column names of table containing studies
+    public static String STUDY_TABLE;
+    public static String STUDY_SHORTNAME_COLUMN;
+    public static String STUDY_NAME_COLUMN;
+
+    //Table and column names of table containing reviews
+    public static String REVIEW_TABLE;
+    public static String REVIEW_USER_ID_COLUMN;
+    public static String REVIEW_LECTURE_ID_COLUMN;
+    public static String REVIEW_RATING_COLUMN;
+    public static String REVIEW_COMMENT_COLUMN;
+    public static String REVIEW_IS_DELETED_COLUMN;
+    public static String REVIEW_IS_DELETED_VALUE_FALSE; //0
+    public static String REVIEW_IS_DELETED_VALUE_TRUE; //1
+
+
+    //Table and column names of table containing lectures
+    public static String LECTURE_TABLE;
+    public static String LECTURE_COURSE_ID_COLUMN;
+    public static String LECTURE_START_DATE_COLUMN;
+    public static String LECTURE_END_DATE_COLUMN;
+    public static String LECTURE_TYPE_COLUMN;
+    public static String LECTURE_LOCATION_COLUMN;
+    public static String LECTURE_DESCRIPTION_COLUMN;
+
+
 
     /**
      * Not more than one ConfigLoader can be instantiated, why it is a SINGLETON.

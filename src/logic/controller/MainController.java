@@ -1,6 +1,7 @@
 package logic.controller;
 
 import dal.DBWrapper;
+import logic.misc.ConfigLoader;
 import model.user.User;
 
 import javax.sql.rowset.CachedRowSet;
@@ -28,20 +29,21 @@ public class MainController {
 
         try {
             Map<String,String> whereParams = new HashMap<String, String>();
-            whereParams.put("cbs_mail", cbs_mail);
-            whereParams.put("password", password);
+            whereParams.put(ConfigLoader.USER_CBSMAIL_COLUMN, cbs_mail);
+            whereParams.put(ConfigLoader.USER_PASSWORD_COLUMN, password);
 
-            CachedRowSet rowSet = DBWrapper.getRecords("user", null, whereParams, null);
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.USER_TABLE, null, whereParams, null);
 
             while (rowSet.next()){
 
                 User user = new User();
-                user.setId(rowSet.getInt("id"));
-                user.setCbsMail(rowSet.getString("cbs_mail"));
-                user.setType(rowSet.getString("type"));
-                user.setFirstName(rowSet.getString("firstName"));
-                user.setLastName(rowSet.getString("lastName"));
+                user.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+                user.setCbsMail(rowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
+                user.setType(rowSet.getString(ConfigLoader.USER_TYPE_COLUMN));
+                user.setFirstName(rowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN));
+                user.setLastName(rowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN));
 
+                //FJERN
                 System.out.println("User found");
                 return user;
             }
@@ -49,6 +51,7 @@ public class MainController {
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
+        //FJERN
         System.out.println("User not found");
         return null;
     }

@@ -3,6 +3,7 @@ import com.sun.net.httpserver.HttpServer;
 import logic.misc.CBSParser;
 import logic.misc.ConfigLoader;
 import logic.misc.CustomLogger;
+import logic.misc.I18NLoader;
 import view.server.MainView;
 
 import java.io.PrintStream;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        I18NLoader.parseLanguage();
         ConfigLoader.parseConfig();
         String sUrl = "http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/";
         HttpServer server = null;

@@ -1,6 +1,8 @@
 package view.server;
 
 import logic.controller.AdminController;
+import logic.misc.ConfigLoader;
+import logic.misc.I18NLoader;
 import model.entity.Course;
 import model.entity.Review;
 import model.entity.Study;
@@ -34,22 +36,22 @@ public class AdminView {
         this.adminCtrl = adminCtrl;
         this.input = input;
 
-        System.out.println("You are logged in as " +
+        System.out.println(I18NLoader.YOU_ARE_LOGGED_IN_AS + " " +
                 currentAdmin.getFirstName() + " " + currentAdmin.getLastName());
 
         do{
 
-            System.out.println("\nPress [ 1 ] to register a new user");
-            System.out.println("Press [ 2 ] to assign courses to a user");
-            System.out.println("Press [ 3 ] to delete a user");
-            System.out.println("Press [ 4 ] to delete a review");
-            System.out.println("Press [ 0 ] to log out");
+            System.out.println("\n" + I18NLoader.PRESS_WORD +" [ 1 ] " + I18NLoader.TO_REGISTER_A_NEW_USER);
+            System.out.println(I18NLoader.PRESS_WORD +" [ 2 ] " + I18NLoader.TO_ASSIGN_COURSES_TO_A_USER);
+            System.out.println(I18NLoader.PRESS_WORD +" [ 3 ] " + I18NLoader.TO_DELETE_A_USER);
+            System.out.println(I18NLoader.PRESS_WORD +" [ 4 ] " + I18NLoader.TO_DELETE_A_REVIEW);
+            System.out.println(I18NLoader.PRESS_WORD +" [ 0 ] " + I18NLoader.TO_LOG_OUT);
 
             int choice = input.nextInt();
 
             switch (choice){
                 case 0:
-                    System.out.println("\nLogging out..\n");
+                    System.out.println("\n" + I18NLoader.LOGGING_OUT+ "...\n");
                     keepLoggedIn = false;
                     break;
                 case 1:
@@ -65,7 +67,7 @@ public class AdminView {
                     deleteReviewView();
                     break;
                 default:
-                    System.out.println("Wrong input, try again");
+                    System.out.println(I18NLoader.WRONG_INPUT_TRY_AGAIN);
                     break;
             }
 
@@ -78,51 +80,57 @@ public class AdminView {
      */
     private void createUserView(){
         User newUser = new User();
-        do{
-            input.nextLine();
-            System.out.println("Register: ");
-            System.out.println("[ 1 ] Student");
-            System.out.println("[ 2 ] Teacher");
-            System.out.println("[ 3 ] Admin");
+        try {
+            do {
+                input.nextLine();
+                System.out.println(I18NLoader.REGISTER_WORD + ": ");
+                System.out.println("[ 1 ] " + I18NLoader.STUDENT_WORD);
+                System.out.println("[ 2 ] " + I18NLoader.TEACHER_WORD);
+                System.out.println("[ 3 ] " + I18NLoader.ADMIN_WORD);
 
-            int choice = input.nextInt();
-            switch (choice){
-                case 1:
-                    newUser.setType("student");
-                    break;
-                case 2:
-                    newUser.setType("teacher");
-                    break;
-                case 3:
-                    newUser.setType("admin");
-                    break;
-                default:
-                    System.out.println("Wrong input, try again.");
+                int choice = input.nextInt();
+                switch (choice) {
+                    case 1:
+                        newUser.setType(ConfigLoader.USER_TYPE_VALUE_STUDENT);
+                        break;
+                    case 2:
+                        newUser.setType(ConfigLoader.USER_TYPE_VALUE_TEACHER);
+                        break;
+                    case 3:
+                        newUser.setType(ConfigLoader.USER_TYPE_VALUE_ADMIN);
+                        break;
+                    default:
+                        System.out.println(I18NLoader.WRONG_INPUT_TRY_AGAIN);
 
-            }
+                }
 
-        } while(newUser.getType() == null);
-        input.nextLine(); //These random nextLine() calls are to fix scanner problem, as we need it to jump to new line
+            } while (newUser.getType() == null);
+            input.nextLine(); //These random nextLine() calls are to fix scanner problem, as we need it to jump to new line
 
-        System.out.println("Registering " + newUser.getType() + "...");
-        System.out.print("Enter first name: ");
-        newUser.setFirstName(input.nextLine());
+            System.out.println(I18NLoader.REGISTERING_WORD + " " + newUser.getType() + "...");
+            System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.FIRST_NAME + ": ");
+            newUser.setFirstName(input.nextLine());
 
-        System.out.print("Enter last name: ");
-        newUser.setLastName(input.nextLine());
+            System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.LAST_NAME + ": ");
+            newUser.setLastName(input.nextLine());
 
-        System.out.print("Enter CBS email adresse:");
-        newUser.setCbsMail(input.nextLine());
+            System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.SCHOOL_ABBREVIATION + " " + I18NLoader.MAIL_WORD + ": ");
+            newUser.setCbsMail(input.nextLine());
 
-        do {
-            System.out.print("Enter password: ");
-            newUser.setPassword(input.nextLine());
-            if(!newUser.getPassword().matches(".*[a-zA-Z]+.*")){
-                System.out.println("Invalid password. Please try again. \n");
-            }
-        } while(!newUser.getPassword().matches(".*[a-zA-Z]+.*"));
+            do {
+                System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.PASSWORD_WORD + ": ");
+                newUser.setPassword(input.nextLine());
+                if (!newUser.getPassword().matches(".*[a-zA-Z]+.*")) {
+                    System.out.println(I18NLoader.INVALID_PASSWORD_TRY_AGAIN +"\n");
+                }
+            } while (!newUser.getPassword().matches(".*[a-zA-Z]+.*"));
 
-        adminCtrl.createUser(newUser);
+            adminCtrl.createUser(newUser);
+        } catch(Exception ex) {
+            System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
+            System.out.println(ex.getMessage());
+            System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
+        }
     }
 
     /**
@@ -130,8 +138,8 @@ public class AdminView {
      */
     private void assignCoursesView(){
         input.nextLine();
-        System.out.println("\nPress [ 1 ] to assign courses by study (used for students)");
-        System.out.println("Press [ 2 ] to assign a single course (used for teachers)\n");
+        System.out.println("\n" + I18NLoader.PRESS_WORD + " [ 1 ] " + I18NLoader.TO_ASSIGN_COURSES_BY_STUDY);
+        System.out.println(I18NLoader.PRESS_WORD + " [ 2 ] " + I18NLoader.TO_ASSIGN_A_SINGLE_COURSE + "\n");
         int choice = input.nextInt();
 
         switch (choice) {
@@ -140,31 +148,31 @@ public class AdminView {
                     input.nextLine();
 
 
-                    System.out.print("Enter ID of the student: ");
+                    System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_STUDENT + ": ");
                     int studentId = input.nextInt();
                     User user = (User) adminCtrl.getSingleRecord(studentId, 1);
 
-                    System.out.println("You have chosen student: " + user.getFirstName() + " " + user.getLastName());
+                    System.out.println(I18NLoader.YOU_HAVE_CHOSEN_STUDENT + ": " + user.getFirstName() + " " + user.getLastName());
 
-                    System.out.print("Enter ID of the study: ");
+                    System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_STUDY + ": ");
                     int studyId = input.nextInt();
 
                     Study study = (Study) adminCtrl.getSingleRecord(studyId, 2);
-                    System.out.println("You have chosen Study: " + study.getName());
-                    System.out.println("Are you sure you want to assign the courses for " +
-                            study.getName() + " to " + user.getFirstName() + "?");
-                    System.out.println("[ 1 ] Yes \n[ 2 ] No");
+                    System.out.println(I18NLoader.YOU_HAVE_CHOSEN_STUDY + ": " + study.getName());
+                    System.out.println(I18NLoader.YOU_WANT_TO_ASSIGN_THE_COURSES_FOR + " " +
+                            study.getName() + I18NLoader.TO_WORD + user.getFirstName() + "?");
+                    System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
                     int confirm = input.nextInt();
                     input.nextLine();
                     if(confirm == 1){
                         adminCtrl.assignStudy(studentId, studyId);
-                        System.out.println("Courses successfully assigned.");
+                        System.out.println(I18NLoader.COURSES_SUCCESSFULLY_ASSIGNED);
                         break;
                     } else if(confirm == 2) {
-                        System.out.println("Reverting back to main menu...");
+                        System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
                         break;
                     } else {
-                        System.out.println("Invalid input.\n Reverting back to main menu");
+                        System.out.println(I18NLoader.INVALID_INPUT + ".\n " + I18NLoader.REVERTING_TO_MAINMENU);
                         break;
                     }
 
@@ -172,49 +180,50 @@ public class AdminView {
 
                 } catch(Exception ex){
                     input.nextLine();
-                    System.out.println("An Error has occurred. Did not assign courses.");
-                    System.out.println("Reverting to main menu...");
+                    System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + " . " + I18NLoader.DID_NOT_ASSIGN_COURSES);
+                    System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
                     break;
                 }
 
                 case 2:
                     try {
 
-                        System.out.print("Enter ID of the user: ");
+                        System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER + ": ");
                         int studentId = input.nextInt();
 
                         User user = (User) adminCtrl.getSingleRecord(studentId, 1);
 
-                        System.out.println("You have chosen user: " + user.getFirstName() + " " + user.getLastName());
+                        System.out.println(I18NLoader.YOU_HAVE_CHOSEN_USER + ": " + user.getFirstName() + " " + user.getLastName());
 
 
-                        System.out.print("Enter ID of the course: ");
+                        System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_COURSE + ": ");
                         int courseId = input.nextInt();
                         Course course = (Course) adminCtrl.getSingleRecord(courseId, 3);
-                        System.out.println("You have chosen course: " + course.getDisplaytext());
-                        System.out.println("Are you sure you want to assign the course to " + user.getFirstName() + "?");
-                        System.out.println("[ 1 ] Yes \n[ 2 ] No");
+                        System.out.println(I18NLoader.YOU_HAVE_CHOSEN_COURSE + ": " + course.getDisplaytext());
+                        System.out.println(I18NLoader.YOU_WANT_TO_ASSIGN_THE_COURSES_FOR + " " + user.getFirstName() + "?");
+                        System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
                         int confirm = input.nextInt();
                         if(confirm == 1){
                             adminCtrl.assignSingleCourse(studentId, courseId);
-                            System.out.println("Courses successfully assigned.");
+                            System.out.println(I18NLoader.COURSES_SUCCESSFULLY_ASSIGNED);
                             break;
                         } else if(confirm == 2) {
-                            System.out.println("Reverting back to main menu...");
+                            System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
                             break;
                         } else {
-                            System.out.println("Invalid input.\n Reverting back to main menu");
+                            System.out.println(I18NLoader.INVALID_INPUT + ".\n " + I18NLoader.REVERTING_TO_MAINMENU);
                             break;
                         }
 
                     } catch(Exception ex){
                         input.nextLine();
-                        System.out.println("An Error has occurred. Did not assign the course.");
-                        System.out.println("Reverting to main menu...");
+                        System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + ". " + I18NLoader.DID_NOT_ASSIGN_COURSES);
+                        System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
+
                         break;
                     }
             default:
-                System.out.println("Invalid key pressed. \nRevering to main menu...\n");
+                System.out.println( I18NLoader.INVALID_KEY_PRESSED + ". \n" + I18NLoader.REVERTING_TO_MAINMENU + "...\n");
                 return;
         }
     }
@@ -224,22 +233,28 @@ public class AdminView {
      */
     private void deleteUserView() {
         input.nextLine();
-        System.out.print("\nEnter ID of the user you want to delete: ");
+        try {
+            System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER_TO_DELETE + ": ");
 
-        User user = (User) adminCtrl.getSingleRecord(input.nextInt(),1);
+            User user = (User) adminCtrl.getSingleRecord(input.nextInt(), 1);
 
-        System.out.println("Are you sure, you want to delete " + user.getFirstName() + " " + user.getLastName() + "?");
-        System.out.println("[ 1 ] Yes \n[ 2 ] No");
+            System.out.println(I18NLoader.YOU_WANT_TO_DELETE + " " + user.getFirstName() + " " + user.getLastName() + "?");
+            System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
 
-        int confirm = input.nextInt();
+            int confirm = input.nextInt();
 
-        if(confirm == 1){
-            adminCtrl.deleteUser(user.getId());
-            System.out.println("User successfully deleted.");
-        } else if(confirm == 2) {
-            System.out.println("Reverting back to main menu...");
-        } else {
-            System.out.println("Invalid input.\n Reverting back to main menu");
+            if (confirm == 1) {
+                adminCtrl.deleteUser(user.getId());
+                System.out.println(I18NLoader.USER_SUCCESFULLY_DELETED + ".");
+            } else if (confirm == 2) {
+                System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
+            } else {
+                System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+            }
+        } catch (Exception ex) {
+            System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
+            System.out.println(ex.getMessage());
+            System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
         input.nextLine();
     }
@@ -251,29 +266,32 @@ public class AdminView {
         input.nextLine();
         try {
 
-            System.out.print("\nEnter ID of the review you want to delete: ");
+            System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_REVIEW_TO_DELETE +  ": ");
 
             Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 4);
 
-            System.out.println("Are you sure, you want to delete review\nRating:" + review.getRating() + "\nComment:  " + review.getComment());
-            System.out.println("[ 1 ] Yes \n[ 2 ] No");
+            System.out.println(I18NLoader.YOU_WANT_TO_DELETE_REVIEW + "\n" + I18NLoader.RATING_WORD + ":" + review.getRating() +
+                    "\n" + I18NLoader.COMMENT_WORD + ": " + review.getComment());
+            System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
 
             int confirm = input.nextInt();
 
             if (confirm == 1) {
                 if (adminCtrl.softDeleteReview(0, review.getId())) {
-                    System.out.println("Review successfully deleted.");
+                    System.out.println(I18NLoader.REVIEW_DELETED + ".");
                 } else {
-                    System.out.println("Review did not successfully get deleted.\nReverting back to main menu...");
+                    System.out.println(I18NLoader.REVIEW_NOT_DELETED + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
                 }
             } else if (confirm == 2) {
-                System.out.println("Reverting back to main menu...");
+                System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
             } else {
-                System.out.println("Invalid input.\n Reverting back to main menu");
+                System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
             }
         } catch (Exception ex){
             input.nextLine();
+            System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
             System.out.println(ex.getMessage());
+            System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
     }
 
