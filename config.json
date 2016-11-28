@@ -15,8 +15,11 @@
   "SERVER_ADDRESS":"localhost",
   "SERVER_PORT":"5000",
   "DEBUG":"",
-  "ENCRYPTION":"TRUE",
+  "ENCRYPTION":"FALSE",
   "LANGUAGE":"i18n_GB.json",
+
+
+
   "ID_COLUMN_OF_ALL_TABLES":"id",
   "USER_TABLE":"user",
   "USER_FIRSTNAME_COLUMN":"firstName",

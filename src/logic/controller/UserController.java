@@ -42,8 +42,8 @@ public abstract class UserController {
             while (rowSet.next()){
                 Course course = new Course();
 
-                course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
-                course.setCode(ConfigLoader.COURSE_CODE_COLUMN);
+                course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
+                course.setCode(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
                 course.setEvents(getLectures(course.getCode()));
 
                 courses.add(course);

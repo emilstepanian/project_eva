@@ -31,7 +31,6 @@ public class CBSParser {
      */
     public static void parseCBSData() {
         try {
-
             parseCoursesToArray();
             parseStudiesToDatabase();
             parseCoursesToDatabase();

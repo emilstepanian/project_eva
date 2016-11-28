@@ -1,6 +1,7 @@
 package view.client;
 
 import com.google.gson.Gson;
+import com.sun.jersey.api.core.ResourceConfig;
 import logic.controller.MainController;
 import logic.controller.ClientController;
 import logic.misc.ConfigLoader;
@@ -23,6 +24,10 @@ import java.util.Map;
 @Path("api")
 public class ClientEndpoints {
 
+
+
+
+
     ClientController clientCtrl = new ClientController();
     MainController mainCtrl;
 
@@ -35,12 +40,19 @@ public class ClientEndpoints {
     @Consumes("application/json")
     @Path("/login")
     public Response authenticate(String loginCredentials){
+        System.out.println(loginCredentials);
+
         mainCtrl = new MainController();
 
         User clientReceived = new Gson().fromJson(loginCredentials, User.class);
-        User clientReturned = mainCtrl.authenticate(clientReceived.getCbsMail(), clientReceived.getPassword());
+        User clientReturned = mainCtrl.authenticate(clientReceived.getCbsMail(), Digester.hash(clientReceived.getPassword()));
+
+        System.out.println(clientReturned.getFirstName() + clientReturned.getLastName() + clientReturned.getId());
 
         if(clientReturned != null){
+
+
+
             return successResponse(200, clientReturned);
         } else {
             return errorResponse(401, I18NLoader.USER_LOGIN_DENIED);
@@ -50,14 +62,14 @@ public class ClientEndpoints {
 
     /**
      * Endpoint used to retrieve courses of a specific client.
-     * @param clientType Type of client
      * @param clientId The client's ID
      * @return An ArrayList with the client's courses as json
      */
     @GET
     @Consumes("application/json")
-    @Path("course/user/{userType}/{userId}")
-    public Response getCourses(@PathParam("userType") String clientType, @PathParam("userId") int clientId){
+    @Path("course/user/{userId}")
+    public Response getCourses(@PathParam("userId") int clientId){
+        System.out.println(clientId);
 
         ArrayList<Course> courses = clientCtrl.getCourses(clientId);
 
@@ -109,14 +121,13 @@ public class ClientEndpoints {
 
     /**
      * Endpoint used to retrieve reviews of a specific lecture.
-     * @param clientType Type of client
      * @param lectureId the lecture's ID
      * @return An ArrayList with the lecture's reviews as json
      */
     @GET
     @Consumes("application/json")
-    @Path("review/entity/lecture/{userType}/{lectureId}")
-    public Response getLectureReviews(@PathParam("userType") String clientType, @PathParam("lectureId") int lectureId){
+    @Path("review/lecture/{lectureId}")
+    public Response getLectureReviews(@PathParam("lectureId") int lectureId){
 
         ArrayList<Review> reviews = clientCtrl.getLectureReviews(lectureId);
 
@@ -151,14 +162,14 @@ public class ClientEndpoints {
      * Endpoint used to soft delete reviews. Pass '0' as user ID,
      * if requester is a teacher.
      * @param reviewId The ID of the review wished to be deleted
-     * @param userId The ID of the student who wrote the review.
+     * @param teacherId The ID of the student who wrote the review.
      * @return Returns a server response saying whether the delete was successful or not.
      */
     @POST
     @Consumes("application/json")
-    @Path("review/entity/{reviewId}/delete({userId})")
-    public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("userId") int userId){
-        if(userId == 0){
+    @Path("review/user/{teacherId}/delete({reviewId})")
+    public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("teacherId") int teacherId){
+        if(teacherId == 0){
             if(clientCtrl.softDeleteReview(0, reviewId)){
                 return successResponse(200, I18NLoader.REVIEW_DELETED);
             } else {
@@ -166,7 +177,7 @@ public class ClientEndpoints {
             }
 
         } else {
-            if(clientCtrl.softDeleteReview(userId, reviewId)){
+            if(clientCtrl.softDeleteReview(teacherId, reviewId)){
                 return successResponse(200, I18NLoader.REVIEW_DELETED);
             } else {
                 return errorResponse(500, I18NLoader.REVIEW_NOT_DELETED);
@@ -195,7 +206,6 @@ public class ClientEndpoints {
      */
     protected Response successResponse(int status, Object data) {
         Gson gson = new Gson();
-
         return Response.status(status).entity(gson.toJson(Digester.encrypt(gson.toJson(data)))).build();
     }
 
