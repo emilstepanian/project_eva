@@ -1,7 +1,6 @@
 package model.entity;
 
 import java.util.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
 public class Lecture {
 
     private int id;
-    private String courseId;
+    private String courseCode;
     private String type;
     private String description;
     private List<String> start = new ArrayList<String>();
@@ -24,8 +23,8 @@ public class Lecture {
     }
 
 
-    public Lecture(String courseId, String type, String description, Date startDate, Date endDate, String location, int id) {
-        this.courseId = courseId;
+    public Lecture(String courseCode, String type, String description, Date startDate, Date endDate, String location, int id) {
+        this.courseCode = courseCode;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
@@ -48,12 +47,12 @@ public class Lecture {
         this.id = id;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getType() {

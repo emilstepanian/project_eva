@@ -15,13 +15,6 @@ public class Review {
     public Review() {
     }
 
-    public Review(int userId, int lectureId, int rating, String comment, boolean isDeleted) {
-        this.userId = userId;
-        this.lectureId = lectureId;
-        this.rating = rating;
-        this.comment = comment;
-        this.isDeleted = isDeleted;
-    }
 
     public int getId() {
         return id;

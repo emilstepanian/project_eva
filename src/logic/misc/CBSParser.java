@@ -199,7 +199,7 @@ public class CBSParser {
                         for (Lecture lecture : course.getEvents()){
                             lectureMap = new HashMap<String, String>();
 
-                            lectureMap.put(ConfigLoader.LECTURE_COURSE_ID_COLUMN, course.getId());
+                            lectureMap.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, course.getId());
                             lectureMap.put(ConfigLoader.LECTURE_TYPE_COLUMN, lecture.getType());
                             lectureMap.put(ConfigLoader.LECTURE_DESCRIPTION_COLUMN, lecture.getDescription());
 

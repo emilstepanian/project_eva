@@ -77,13 +77,13 @@ public class ConfigLoader {
     public static String REVIEW_RATING_COLUMN;
     public static String REVIEW_COMMENT_COLUMN;
     public static String REVIEW_IS_DELETED_COLUMN;
-    public static String REVIEW_IS_DELETED_VALUE_FALSE; //0
-    public static String REVIEW_IS_DELETED_VALUE_TRUE; //1
+    public static String REVIEW_IS_DELETED_VALUE_FALSE;
+    public static String REVIEW_IS_DELETED_VALUE_TRUE;
 
 
     //Table and column names of table containing lectures
     public static String LECTURE_TABLE;
-    public static String LECTURE_COURSE_ID_COLUMN;
+    public static String LECTURE_COURSE_CODE_COLUMN;
     public static String LECTURE_START_DATE_COLUMN;
     public static String LECTURE_END_DATE_COLUMN;
     public static String LECTURE_TYPE_COLUMN;

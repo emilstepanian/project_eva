@@ -13,7 +13,6 @@ import java.sql.SQLException;
  * Created by Kasper on 17/10/2016.
  */
 public class MYSQLDriver {
-    private static Connection dbConnection = null;
     private static final String URL = ConfigLoader.DB_TYPE+ConfigLoader.DB_HOST+ConfigLoader.DB_PORT+"/"+ConfigLoader.DB_NAME+"?autoReconnect=true&useSSL=false";
     private static final String USERNAME = ConfigLoader.DB_USER;
     private static final String PASSWORD = ConfigLoader.DB_PASS;
@@ -25,6 +24,7 @@ public class MYSQLDriver {
 
     public static CachedRowSet executeSQL(String sql) throws SQLException {
         ResultSet result = null;
+        Connection dbConnection = null;
         CachedRowSet cr = new CachedRowSetImpl();
         try {
             dbConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -41,6 +41,8 @@ public class MYSQLDriver {
     }
 
     public static void updateSQL(String sql) throws SQLException{
+        Connection dbConnection = null;
+
         try{
             dbConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             dbConnection.prepareStatement(sql).executeUpdate();

@@ -277,7 +277,7 @@ public class AdminView {
             int confirm = input.nextInt();
 
             if (confirm == 1) {
-                if (adminCtrl.softDeleteReview(0, review.getId())) {
+                if (adminCtrl.softDeleteReview(review.getId())) {
                     System.out.println(I18NLoader.REVIEW_DELETED + ".");
                 } else {
                     System.out.println(I18NLoader.REVIEW_NOT_DELETED + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);

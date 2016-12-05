@@ -14,7 +14,11 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
 /**
@@ -24,22 +28,34 @@ public class Main {
 
 
     public static void main(String[] args) {
+
         String sUrl = "http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/";
         I18NLoader.parseLanguage();
         ConfigLoader.parseConfig();
         HttpServer server = null;
+
 
         try {
             PrintStream stdOut = System.out;
             System.setOut(stdOut);
 
             server = createHttpServer(sUrl);
+
+            //Turn of Jersey logging.
+            for (String l :
+                    Collections.list(LogManager.getLogManager().getLoggerNames())) {
+                if (l.startsWith("com.sun.jersey")) {
+                        Logger.getLogger(l).setLevel(Level.OFF);
+                }
+            }
             server.start();
 
             CustomLogger.initiateLog(ConfigLoader.DEBUG);
 
+
             //CBSParser.parseCBSData();
             new MainView();
+
 
 
 

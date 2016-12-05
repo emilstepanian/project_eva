@@ -43,16 +43,12 @@ public class MainController {
                 user.setFirstName(rowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN));
                 user.setLastName(rowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN));
 
-                //FJERN
-                System.out.println("User found");
                 return user;
             }
 
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
-        //FJERN
-        System.out.println("User not found");
         return null;
     }
 

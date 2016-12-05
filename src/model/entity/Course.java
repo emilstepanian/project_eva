@@ -12,7 +12,7 @@ public class Course {
      * as the data received from CBS specifices them as "events.
      */
     private Lecture[] events;
-
+    private int databaseId;
     private String id;
     private String code;
     private String displaytext;
@@ -41,6 +41,14 @@ public class Course {
      */
     public void setEvents(Lecture[] events) {
         this.events = events;
+    }
+
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
     }
 
     public String getId() {

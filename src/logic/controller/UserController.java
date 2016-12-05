@@ -42,8 +42,9 @@ public abstract class UserController {
             while (rowSet.next()){
                 Course course = new Course();
 
-                course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
-                course.setCode(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
+                course.setDatabaseId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+                course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
+                course.setCode(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
                 course.setEvents(getLectures(course.getCode()));
 
                 courses.add(course);
@@ -70,7 +71,7 @@ public abstract class UserController {
         try {
             Map<String,String> whereParams = new HashMap<String, String>();
 
-            whereParams.put(ConfigLoader.LECTURE_COURSE_ID_COLUMN, courseCode);
+            whereParams.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, courseCode);
 
             CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, whereParams, null);
 
@@ -78,7 +79,7 @@ public abstract class UserController {
                 Lecture lecture = new Lecture();
 
                 lecture.setLectureId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
-                lecture.setCourseId(rowSet.getString(ConfigLoader.LECTURE_COURSE_ID_COLUMN));
+                lecture.setCourseCode(rowSet.getString(ConfigLoader.LECTURE_COURSE_CODE_COLUMN));
                 lecture.setStartDate(rowSet.getTimestamp(ConfigLoader.LECTURE_START_DATE_COLUMN));
                 lecture.setEndDate(rowSet.getTimestamp(ConfigLoader.LECTURE_END_DATE_COLUMN));
                 lecture.setType(rowSet.getString(ConfigLoader.LECTURE_TYPE_COLUMN));
@@ -156,7 +157,7 @@ public abstract class UserController {
      * @param reviewId The review ID of the review that is wished deleted.
      * @return Boolean value indicating whether review is deleted succesfully or not.
      */
-    public boolean softDeleteReview(int userId, int reviewId) {
+    public boolean softDeleteReview(int reviewId) {
         boolean isSoftDeleted = false;
 
         try {
@@ -166,13 +167,6 @@ public abstract class UserController {
 
             Map<String, String> whereParams = new HashMap<String, String>();
 
-            /*
-            If-statement added to be able to use method in multiple situations.
-            If Admin is deleting, he simply passes 0 as reviewId parameter.
-             */
-            if(userId != 0) {
-                whereParams.put(ConfigLoader.REVIEW_USER_ID_COLUMN, String.valueOf(userId));
-            }
 
             whereParams.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(reviewId));
 

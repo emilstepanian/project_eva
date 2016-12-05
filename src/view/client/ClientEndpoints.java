@@ -1,10 +1,8 @@
 package view.client;
 
 import com.google.gson.Gson;
-import com.sun.jersey.api.core.ResourceConfig;
 import logic.controller.MainController;
 import logic.controller.ClientController;
-import logic.misc.ConfigLoader;
 import logic.misc.I18NLoader;
 import logic.misc.Statistics;
 import model.entity.Course;
@@ -15,7 +13,6 @@ import security.Digester;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,10 +20,6 @@ import java.util.Map;
  */
 @Path("api")
 public class ClientEndpoints {
-
-
-
-
 
     ClientController clientCtrl = new ClientController();
     MainController mainCtrl;
@@ -40,14 +33,11 @@ public class ClientEndpoints {
     @Consumes("application/json")
     @Path("/login")
     public Response authenticate(String loginCredentials){
-        System.out.println(loginCredentials);
 
         mainCtrl = new MainController();
 
         User clientReceived = new Gson().fromJson(loginCredentials, User.class);
         User clientReturned = mainCtrl.authenticate(clientReceived.getCbsMail(), Digester.hash(clientReceived.getPassword()));
-
-        System.out.println(clientReturned.getFirstName() + clientReturned.getLastName() + clientReturned.getId());
 
         if(clientReturned != null){
 
@@ -69,7 +59,6 @@ public class ClientEndpoints {
     @Consumes("application/json")
     @Path("course/user/{userId}")
     public Response getCourses(@PathParam("userId") int clientId){
-        System.out.println(clientId);
 
         ArrayList<Course> courses = clientCtrl.getCourses(clientId);
 
@@ -82,14 +71,14 @@ public class ClientEndpoints {
 
     /**
      * Endpoint used to retrieve statistics for a specific course.
-     * @param courseCode The code of the course
+     * @param courseId The code of the course
      * @return Returns a Map with the course's statistics as json.
      */
     @GET
     @Consumes("application/json")
-    @Path("course/entity/{courseCode}")
-    public Response getCourseStatistics(@PathParam("courseCode")String courseCode){
-        Map<String, String> courseStatistics = Statistics.getCourseStatistics(clientCtrl, courseCode);
+    @Path("course/entity/{courseId}")
+    public Response getCourseStatistics(@PathParam("courseId")String courseId){
+        Map<String, String> courseStatistics = Statistics.getCourseStatistics(clientCtrl, courseId);
 
         if(!courseStatistics.isEmpty() && courseStatistics == null){
             return successResponse(200, courseStatistics);
@@ -106,18 +95,16 @@ public class ClientEndpoints {
      */
     @GET
     @Consumes("application/json")
-    @Path("course/entity/{lectureId}/{courseId}")
-    public Response getLectureStatistics(@PathParam("lectureId")int lectureId, @PathParam("courseId") int courseId){
+    @Path("course/entity/{courseId}/{lectureId}")
+    public Response getLectureStatistics(@PathParam("courseId") int courseId, @PathParam("lectureId")int lectureId){
         Map<String, String> lectureStatistics = Statistics.getLectureStatistics(clientCtrl, courseId, lectureId);
 
-        if(!lectureStatistics.isEmpty() && lectureStatistics == null){
+        if(!lectureStatistics.isEmpty() && lectureStatistics != null){
             return successResponse(200, lectureStatistics);
         } else {
             return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
         }
     }
-
-
 
     /**
      * Endpoint used to retrieve reviews of a specific lecture.
@@ -161,31 +148,47 @@ public class ClientEndpoints {
     /**
      * Endpoint used to soft delete reviews. Pass '0' as user ID,
      * if requester is a teacher.
-     * @param reviewId The ID of the review wished to be deleted
-     * @param teacherId The ID of the student who wrote the review.
+     * @param reviewInJson the review to delete in a JSON string
      * @return Returns a server response saying whether the delete was successful or not.
      */
     @POST
     @Consumes("application/json")
-    @Path("review/user/{teacherId}/delete({reviewId})")
-    public Response softDeleteReview(@PathParam("reviewId") int reviewId, @PathParam("teacherId") int teacherId){
-        if(teacherId == 0){
-            if(clientCtrl.softDeleteReview(0, reviewId)){
+    @Path("review/delete")
+    public Response softDeleteReview(String reviewInJson){
+        Gson gson = new Gson();
+        Review review = gson.fromJson(reviewInJson, Review.class);
+
+            if(clientCtrl.softDeleteReview(review.getId())){
                 return successResponse(200, I18NLoader.REVIEW_DELETED);
             } else {
                 return errorResponse(500, I18NLoader.REVIEW_NOT_DELETED);
             }
 
-        } else {
-            if(clientCtrl.softDeleteReview(teacherId, reviewId)){
-                return successResponse(200, I18NLoader.REVIEW_DELETED);
-            } else {
-                return errorResponse(500, I18NLoader.REVIEW_NOT_DELETED);
-            }
-        }
 
     }
 
+
+        @POST
+        @Consumes("application/json")
+        @Path("/review/add")
+        public Response addReview(String json) {
+
+            System.out.println(json);
+
+            Gson gson = new Gson();
+            Review review = gson.fromJson(json, Review.class);
+
+            boolean isAdded = clientCtrl.addReview(review);
+
+            if (isAdded) {
+                String toJson = gson.toJson(Digester.encrypt(gson.toJson(isAdded)));
+
+                return successResponse(200, toJson);
+
+            } else {
+                return errorResponse(404, "Failed. Couldn't get reviews.");
+            }
+        }
 
 
     /**
