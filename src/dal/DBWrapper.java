@@ -90,6 +90,8 @@ public class DBWrapper {
 
 
     /**
+     * NOTE: IT IS UNUSED AND NOT WORKING. POSSIBLY REQUIRES FIXING IF A CLIENT IS
+     * IMPLEMENTED DIFFERENTLY THAN eva_client
      *
      * This metods is only used by getRecords() to build the second part of the SQL-statement.
      * Is there no JOINs wished, this is ignored. Otherwise, it builds the "JOIN" clause on the SQL-Statement.
@@ -98,6 +100,7 @@ public class DBWrapper {
      * @param sql The current SQL-statement that is being build.
      * @return Returns a String with the SQL-Statement, with the "JOIN" clause.
      */
+
     private static String joinOn(String table, Map<String, String> joins, String sql){
         StringBuilder builder = new StringBuilder(sql);
 

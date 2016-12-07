@@ -41,26 +41,6 @@ public class Statistics {
         return lectureStatistics;
     }
 
-    /**
-     * Calculates and returns statistics for a course
-     * @param clientCtrl ClientController instance
-     * @param courseId ID of the course
-     * @return Returns a Map containing the statistics
-     */
-    public static Map<String, String> getCourseStatistics(ClientController clientCtrl, String courseId){
-        Map<String, String> courseStatistics = null;
-        try {
-            courseStatistics = new HashMap<String, String>();
-            courseStatistics.put(I18NLoader.COURSE_AVERAGE_MSG, String.valueOf(calculateCourseAverage(clientCtrl, courseId)));
-
-        } catch(Exception ex){
-            System.out.println(ex.getMessage());
-
-        }
-        return courseStatistics;
-
-    }
-
 
 
     /**
@@ -131,22 +111,4 @@ public class Statistics {
     }
 
 
-    /**
-     * Calculates the overall average rating of a whole course.
-     * @param courseId ID of the course
-     * @return Returns a double with the average rating.
-     */
-    private static int calculateCourseAverage(ClientController clientCtrl, String courseId) {
-        Lecture[] lecturesInCourse = clientCtrl.getLectures(courseId);
-        int total = 0;
-
-        for (Lecture lecture : lecturesInCourse){
-            total += calculateLectureAverage(clientCtrl, lecture.getId());
-        }
-
-        int average = total / lecturesInCourse.length;
-
-        return average;
-
-    }
 }

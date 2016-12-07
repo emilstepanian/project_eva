@@ -26,21 +26,23 @@ public class ClientEndpoints {
 
     /**
      * Endpoint used to receive client data to authenticate a client
-     * @param loginCredentials The login credentials of the client received as json
+     * @param encryptedLoginCredentials The login credentials of the client received as json and encrypted
      * @return  The authenticated client as json
      */
     @POST
     @Consumes("application/json")
     @Path("/login")
-    public Response authenticate(String loginCredentials){
+    public Response authenticate(String encryptedLoginCredentials){
+
+        String decryptedLoginCredentials = Digester.decrypt(encryptedLoginCredentials);
+
 
         mainCtrl = new MainController();
 
-        User clientReceived = new Gson().fromJson(loginCredentials, User.class);
+        User clientReceived = new Gson().fromJson(decryptedLoginCredentials, User.class);
         User clientReturned = mainCtrl.authenticate(clientReceived.getCbsMail(), Digester.hash(clientReceived.getPassword()));
 
         if(clientReturned != null){
-
 
 
             return successResponse(200, clientReturned);
@@ -69,23 +71,6 @@ public class ClientEndpoints {
         }
     }
 
-    /**
-     * Endpoint used to retrieve statistics for a specific course.
-     * @param courseId The code of the course
-     * @return Returns a Map with the course's statistics as json.
-     */
-    @GET
-    @Consumes("application/json")
-    @Path("course/entity/{courseId}")
-    public Response getCourseStatistics(@PathParam("courseId")String courseId){
-        Map<String, String> courseStatistics = Statistics.getCourseStatistics(clientCtrl, courseId);
-
-        if(!courseStatistics.isEmpty() && courseStatistics == null){
-            return successResponse(200, courseStatistics);
-        } else {
-            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
-        }
-    }
 
     /**
      * Endpoint used to retrieve statistics for a specific lecture
@@ -127,36 +112,19 @@ public class ClientEndpoints {
 
 
     /**
-     * Endpoint used to retrieve all personal reviews.
-     * @param studentId The ID of the student
-     * @return returns an ArrayList with all the review Objects as json
+     * Endpoint used to soft-delete reviews of a specific lecture
+     * @param encryptedReview The review to be soft-deleted received as JSON and encrypted
+     * @return Returns a http response 200 and confirms that it is deleted
      */
-    @GET
-    @Consumes("application/json")
-    @Path("review/user/{studentId}")
-    public Response getPersonalReviews(@PathParam("studentId") int studentId){
-
-        ArrayList<Review> reviews = clientCtrl.getPersonalReviews(studentId);
-
-        if (!reviews.isEmpty()) {
-            return successResponse(200, reviews);
-        } else {
-            return errorResponse(404, I18NLoader.FAILED_RESOURCE_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Endpoint used to soft delete reviews. Pass '0' as user ID,
-     * if requester is a teacher.
-     * @param reviewInJson the review to delete in a JSON string
-     * @return Returns a server response saying whether the delete was successful or not.
-     */
-    @POST
+    @PUT
     @Consumes("application/json")
     @Path("review/delete")
-    public Response softDeleteReview(String reviewInJson){
+    public Response softDeleteReview(String encryptedReview){
+
+        String decryptedReview = Digester.decrypt(encryptedReview);
+
         Gson gson = new Gson();
-        Review review = gson.fromJson(reviewInJson, Review.class);
+        Review review = gson.fromJson(decryptedReview, Review.class);
 
             if(clientCtrl.softDeleteReview(review.getId())){
                 return successResponse(200, I18NLoader.REVIEW_DELETED);
@@ -168,22 +136,28 @@ public class ClientEndpoints {
     }
 
 
-        @POST
+    /**
+     * Endpoint used to add reviews of a specific lecture to the database
+     * @param encryptedReview The review to be added received as JSON and encrypted
+     * @return Returns a http response 200 and confirms that it is added
+     */
+    @POST
         @Consumes("application/json")
         @Path("/review/add")
-        public Response addReview(String json) {
+        public Response addReview(String encryptedReview) {
 
-            System.out.println(json);
+            String decryptedReview = Digester.decrypt(encryptedReview);
+
 
             Gson gson = new Gson();
-            Review review = gson.fromJson(json, Review.class);
+            Review review = gson.fromJson(decryptedReview, Review.class);
 
             boolean isAdded = clientCtrl.addReview(review);
 
             if (isAdded) {
-                String toJson = gson.toJson(Digester.encrypt(gson.toJson(isAdded)));
+                String addedConfirmed = gson.toJson(Digester.encrypt(gson.toJson(isAdded)));
 
-                return successResponse(200, toJson);
+                return successResponse(200, addedConfirmed);
 
             } else {
                 return errorResponse(404, "Failed. Couldn't get reviews.");

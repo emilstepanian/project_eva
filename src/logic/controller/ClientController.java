@@ -2,11 +2,8 @@ package logic.controller;
 
 import dal.DBWrapper;
 import logic.misc.ConfigLoader;
-import logic.misc.I18NLoader;
 import model.entity.Review;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,19 +13,6 @@ import java.util.Map;
 public class ClientController extends UserController {
 
     public ClientController() {
-    }
-
-
-    /**
-     * Retrieves all reviews from a specific user
-     * @param userId ID of the user
-     * @return ArrayList containing Review objects
-     */
-    public ArrayList<Review> getPersonalReviews(int userId) {
-        Map<String, String> whereParams = new HashMap<String, String>();
-        whereParams.put(ConfigLoader.REVIEW_USER_ID_COLUMN, String.valueOf(userId));
-
-        return getReviews(whereParams);
     }
 
     public boolean addReview(Review review) {

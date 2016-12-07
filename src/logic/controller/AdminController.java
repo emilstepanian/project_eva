@@ -37,7 +37,7 @@ public class AdminController extends UserController {
                 userInfo.put(ConfigLoader.USER_FIRSTNAME_COLUMN, newUser.getFirstName());
                 userInfo.put(ConfigLoader.USER_LASTNAME_COLUMN, newUser.getLastName());
                 userInfo.put(ConfigLoader.USER_CBSMAIL_COLUMN, newUser.getCbsMail());
-                userInfo.put(ConfigLoader.USER_PASSWORD_COLUMN, Digester.hash(newUser.getPassword()));
+                userInfo.put(ConfigLoader.USER_PASSWORD_COLUMN, Digester.hash(Digester.hash(newUser.getPassword())));
                 userInfo.put(ConfigLoader.USER_TYPE_COLUMN, newUser.getType());
 
                 DBWrapper.insertIntoRecords(ConfigLoader.USER_TABLE, userInfo);
