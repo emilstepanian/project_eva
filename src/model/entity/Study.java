@@ -35,12 +35,12 @@ public class Study {
         this.name = name;
     }
 
-    public String getShortname() {
-        return shortname;
-    }
-
     public void setShortname(String shortname) {
         this.shortname = shortname;
+    }
+
+    public String getShortname() {
+        return shortname;
     }
 
     @Override

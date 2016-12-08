@@ -56,14 +56,6 @@ public class Review {
         this.comment = comment;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
     @Override
     public String toString() {
         return "Review{" +

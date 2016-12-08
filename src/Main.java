@@ -14,8 +14,13 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -52,8 +57,10 @@ public class Main {
 
             CustomLogger.initiateLog(ConfigLoader.DEBUG);
 
+            //Runs the CBSParser once every day
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(new CBSParser(), 0, 1, TimeUnit.DAYS);
 
-            //CBSParser.parseCBSData();
             new MainView();
 
 

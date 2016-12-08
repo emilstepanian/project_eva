@@ -20,8 +20,8 @@ public class Course {
     public Course() {
     }
 
-    public Course(String id, String displaytext, String code) {
-        this.id = id;
+    public Course(int databaseId, String displaytext, String code) {
+        this.databaseId = databaseId;
         this.displaytext = displaytext;
         this.code = code;
     }
@@ -41,10 +41,6 @@ public class Course {
      */
     public void setEvents(Lecture[] events) {
         this.events = events;
-    }
-
-    public int getDatabaseId() {
-        return databaseId;
     }
 
     public void setDatabaseId(int databaseId) {

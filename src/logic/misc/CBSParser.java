@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import dal.DBWrapper;
 import model.entity.Course;
 import model.entity.Lecture;
+import model.entity.Study;
 
 import javax.sql.rowset.CachedRowSet;
 import java.io.*;
@@ -20,16 +21,17 @@ import java.util.*;
  * It parses the JSON data into objects inside the system and thereafter parses
  * them into the database
  */
-public class CBSParser {
+public class CBSParser implements Runnable {
     private static Course[] courseArray;
     private static Gson gson = new Gson();
 
 
+
     /**
-     * Is called to parse the data from CBS into the database.
-     * Aggregates all the private methods in the class
+     * A thread that is called to parse the data from CBS into the database.
+     * Aggregates all the private methods in this class.
      */
-    public static void parseCBSData() {
+    public void run() {
         try {
             parseCoursesToArray();
             parseStudiesToDatabase();
@@ -59,13 +61,16 @@ public class CBSParser {
 
     /**
      * Reads the JSON file with study data and creates an array of JSON objects.
-     * Then it adds entries into the Study tabel inside the database
+     * Then it adds entries into the Study table inside the database
      */
     private static void parseStudiesToDatabase() {
+
         JsonReader jsonReader;
         JsonParser jparser = new JsonParser();
 
         Set<String> duplicatesCheck = new HashSet<String>();
+
+        Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.STUDY_TABLE, ConfigLoader.STUDY_SHORTNAME_COLUMN);
 
         try {
             jsonReader = new JsonReader(new FileReader(ConfigLoader.STUDY_DATA_JSON));
@@ -86,10 +91,34 @@ public class CBSParser {
                  */
                 if(!duplicatesCheck.contains(obj.get("shortname").toString().replace("\"", "").substring(0,5))){
 
-                    studyValues.put("shortname",obj.get("shortname").toString().replace("\"", "").substring(0,5));
-                    studyValues.put("name",obj.get("study-name").toString().replace("\"", ""));
-                    duplicatesCheck.add(obj.get("shortname").toString().replace("\"", "").substring(0,5));
-                    DBWrapper.insertIntoRecords("study", studyValues);
+                    if(!databaseCheck.contains(obj.get("shortname").toString().replace("\"", "").substring(0,5))){
+
+                        studyValues.put("shortname",obj.get("shortname").toString().replace("\"", "").substring(0,5));
+                        studyValues.put("name",obj.get("study-name").toString().replace("\"", ""));
+                        duplicatesCheck.add(obj.get("shortname").toString().replace("\"", "").substring(0,5));
+                        DBWrapper.insertIntoRecords("study", studyValues);
+
+                    } else {
+
+                        Study studyToUpdate = (Study) getSingleRecord(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get("shortname").toString().replace("\"", "").substring(0, 5),  1);
+
+                        Map<String, String> updatedStudyValues = new HashMap<String, String>();
+
+                        updatedStudyValues.put(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get("shortname").toString().replace("\"", "").substring(0, 5));
+                        updatedStudyValues.put(ConfigLoader.STUDY_NAME_COLUMN, obj.get("study-name").toString().replace("\"", ""));
+
+                        Map<String, String> whereParam = new HashMap<String, String>();
+
+                        whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(studyToUpdate.getId()));
+
+                        DBWrapper.updateRecords(ConfigLoader.STUDY_TABLE, updatedStudyValues, whereParam);
+
+                        duplicatesCheck.add(obj.get("shortname").toString().replace("\"", "").substring(0, 5));
+
+
+                    }
+
+
                 }
             }
 
@@ -97,6 +126,7 @@ public class CBSParser {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
     }
 
 
@@ -111,11 +141,11 @@ public class CBSParser {
 
             CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.STUDY_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES,ConfigLoader.STUDY_SHORTNAME_COLUMN}, null, null);
 
+            Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.COURSE_TABLE, ConfigLoader.COURSE_CODE_COLUMN);
 
         /*
-           Gennemløb listen af studier hentet fra databasen og gem de første 5 bogstaver af dens shortname, samt det
-           tilhørende id fra databasen i et HashMap.
-           NOTE: (Overvej at lave denne til en metode for sig selv da den også bruges i parseLecturesToDatabase());
+           Go through the list of studies pulled from the database and save the five first characters of its shortname
+           together with the matching ID from the database in the studyAttributes hashmap
         */
             while(rs.next()){
 
@@ -127,20 +157,38 @@ public class CBSParser {
 
 
         /*
-           Løb arrayet af kurser igennem og tjek om der findes et match mellem kurset og studieretninger gemt i
-           studyAttributes hashmappet. Hvis ja, opret da kurset i databasen med det tilhørende study_id.
+           Go through the array of courses and check if there is any matches between the courses and studies in the studyAttribute hashmap.
+           If so, insert the course in the database with the matching study_id
          */
-            for (Course course : courseArray){
+            for (Course course : courseArray) {
 
-                String substring = course.getId().substring(0,5);
+                if (!databaseCheck.contains(course.getId())) {
 
-                if(studyAttributes.containsKey(substring)){
+                    String substring = course.getId().substring(0, 5);
 
-                    courseMap.put(ConfigLoader.COURSE_CODE_COLUMN, course.getDisplaytext());
-                    courseMap.put(ConfigLoader.COURSE_NAME_COLUMN, course.getId());
-                    courseMap.put(ConfigLoader.COURSE_STUDY_ID_COLUMN, studyAttributes.get(substring));
+                    if (studyAttributes.containsKey(substring)) {
 
-                    DBWrapper.insertIntoRecords(ConfigLoader.COURSE_TABLE, courseMap);
+                        courseMap.put(ConfigLoader.COURSE_NAME_COLUMN, course.getDisplaytext());
+                        courseMap.put(ConfigLoader.COURSE_CODE_COLUMN, course.getId());
+                        courseMap.put(ConfigLoader.COURSE_STUDY_ID_COLUMN, studyAttributes.get(substring));
+
+                        DBWrapper.insertIntoRecords(ConfigLoader.COURSE_TABLE, courseMap);
+                    }
+                } else {
+
+                    Course courseToUpdate = (Course) getSingleRecord(ConfigLoader.COURSE_CODE_COLUMN, course.getId(), 2);
+
+
+                    Map<String, String> updatedCourseValues = new HashMap<String, String>();
+
+                    updatedCourseValues.put(ConfigLoader.COURSE_NAME_COLUMN, "hej");
+
+                    Map<String, String> whereParam = new HashMap<String, String>();
+
+                    whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(courseToUpdate.getId()));
+
+                    DBWrapper.updateRecords(ConfigLoader.COURSE_TABLE, updatedCourseValues, whereParam);
+
                 }
             }
 
@@ -154,7 +202,7 @@ public class CBSParser {
     }
 
     /**
-     * Opretter entries i datbasens Lecture tabel.
+     * Creates records in the lecture table in the database.
      * @throws SQLException
      */
     private static void parseLecturesToDatabase() throws SQLException{
@@ -165,7 +213,9 @@ public class CBSParser {
         BufferedReader br;
         Map<String, String> lectureMap;
 
-        CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES, ConfigLoader.COURSE_NAME_COLUMN}, null, null);
+        CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES, ConfigLoader.COURSE_CODE_COLUMN}, null, null);
+
+        //Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.LECTURE_TABLE, ConfigLoader.LECTURE_COURSE_CODE_COLUMN);
 
         try{
 
@@ -179,37 +229,70 @@ public class CBSParser {
             while(rs.next()){
 
 
-                String name = rs.getString(ConfigLoader.COURSE_NAME_COLUMN);
+                String name = rs.getString(ConfigLoader.COURSE_CODE_COLUMN);
 
 
                 for (Course course : courseArray){
 
                     if(course.getId().equals(name)){
 
-                        url = new URL(urlPrefix + course.getId());
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-                        //Empty Course object necessary to read JSON
-                        Course tempCourse = gson.fromJson(br, Course.class);
-                        course.setEvents(tempCourse.getEvents());
+                            url = new URL(urlPrefix + course.getId());
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setRequestMethod("GET");
+                            br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-                        //Insert Lecture for each Lecture object inside every Course object's events.
-                        for (Lecture lecture : course.getEvents()){
-                            lectureMap = new HashMap<String, String>();
+                            //Empty Course object necessary to read JSON
+                            Course tempCourse = gson.fromJson(br, Course.class);
+                            course.setEvents(tempCourse.getEvents());
 
-                            lectureMap.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, course.getId());
-                            lectureMap.put(ConfigLoader.LECTURE_TYPE_COLUMN, lecture.getType());
-                            lectureMap.put(ConfigLoader.LECTURE_DESCRIPTION_COLUMN, lecture.getDescription());
+                            //Insert Lecture for each Lecture object inside every Course object's events.
+                            for (Lecture lecture : course.getEvents()) {
 
-                            lectureMap.put(ConfigLoader.LECTURE_START_DATE_COLUMN, convertToDateTime(lecture.getStart()));
-                            lectureMap.put(ConfigLoader.LECTURE_END_DATE_COLUMN, convertToDateTime(lecture.getEnd()));
-                            lectureMap.put(ConfigLoader.LECTURE_LOCATION_COLUMN, lecture.getLocation());
+                                /*
+                                Error found here. As it is not possible to get the ID from the incoming lectures from CBS, as it is autoincremented,
+                                this was thought as a solution to pinpoint the specific lecture in the database, using the other values of the it.
+                                However, the error is that these values are changed if an update to a lecture happens, and therefore it wont match.
+                                This cancels out the whole idea of this algorithm in the first place. It is left for future improvements.
+                                 */
 
-                            DBWrapper.insertIntoRecords(ConfigLoader.LECTURE_TABLE, lectureMap);
+                                lectureMap = new HashMap<String, String>();
 
-                        }
+                                    lectureMap.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, course.getId());
+                                    lectureMap.put(ConfigLoader.LECTURE_TYPE_COLUMN, lecture.getType());
+                                    lectureMap.put(ConfigLoader.LECTURE_DESCRIPTION_COLUMN, lecture.getDescription());
+
+                                    lectureMap.put(ConfigLoader.LECTURE_START_DATE_COLUMN, convertToDateTime(lecture.getStart()));
+                                    lectureMap.put(ConfigLoader.LECTURE_END_DATE_COLUMN, convertToDateTime(lecture.getEnd()));
+                                    lectureMap.put(ConfigLoader.LECTURE_LOCATION_COLUMN, lecture.getLocation());
+
+                                    CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, lectureMap, null);
+
+                                    if(rowSet.size() < 1){
+                                        DBWrapper.insertIntoRecords(ConfigLoader.LECTURE_TABLE, lectureMap);
+
+                                    } else {
+                                        rowSet.next();
+
+                                    Map<String, String> updatedLectureValues = new HashMap<String, String>();
+
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, course.getId());
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_TYPE_COLUMN, lecture.getType());
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_DESCRIPTION_COLUMN, lecture.getDescription());
+
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_START_DATE_COLUMN, convertToDateTime(lecture.getStart()));
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_END_DATE_COLUMN, convertToDateTime(lecture.getEnd()));
+                                    updatedLectureValues.put(ConfigLoader.LECTURE_LOCATION_COLUMN, lecture.getLocation());
+
+
+                                    Map<String, String> whereParam = new HashMap<String, String>();
+
+                                    whereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(rowSet.getInt("id")));
+
+                                    DBWrapper.updateRecords(ConfigLoader.LECTURE_TABLE, updatedLectureValues, whereParam);
+
+                                }
+                            }
                     }
                 }
             }
@@ -257,5 +340,123 @@ public class CBSParser {
         return dateBuilder.toString();
 
     }
+
+    private static Set<String> retrieveCurrentEntityRecords(String table, String column){
+        Set<String> dbEntities = new HashSet<String>();
+        String[] attributes = {column};
+
+
+        try {
+
+
+            CachedRowSet rowSet = DBWrapper.getRecords(table, attributes, null, null);
+
+            if(table.equals(ConfigLoader.STUDY_TABLE)) {
+                while (rowSet.next()) {
+                    dbEntities.add(rowSet.getString(column));
+                }
+            } else if (table.equals(ConfigLoader.COURSE_TABLE)) {
+                while (rowSet.next()) {
+                    dbEntities.add(rowSet.getString(column));
+                }
+            } else if (table.equals(ConfigLoader.LECTURE_TABLE)){
+                while (rowSet.next()) {
+                    dbEntities.add(rowSet.getString(column));
+                    }
+            }
+
+
+        } catch (SQLException ex) {
+
+
+        }
+
+        return dbEntities;
+    }
+
+
+    private static Object getSingleRecord(String column, String value, int modification){
+        switch (modification){
+            case 1:
+                return getSingleStudy(column, value);
+            case 2:
+                return getSingleCourse(column, value);
+            case 3:
+                return getSingleLecture(column, value);
+            default:
+                return null;
+
+        }
+    }
+
+    /**
+     * Used by getSingleRecord() to return a Study
+     * of the study to return
+     * @return Returns the specified Study.
+     */
+    private static Study getSingleStudy(String column, String value){
+        Study study = new Study();
+
+        try {
+            Map<String, String> whereParam = new HashMap<String, String>();
+            whereParam.put(column, value);
+
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.STUDY_TABLE, null, whereParam, null);
+            rowSet.next();
+            study.setId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+            study.setShortname(rowSet.getString(ConfigLoader.STUDY_SHORTNAME_COLUMN));
+            study.setName(rowSet.getString(ConfigLoader.STUDY_NAME_COLUMN));
+
+        } catch(SQLException ex){
+            ex.getMessage();
+
+        }
+        return study;
+    }
+
+
+   private static Course getSingleCourse(String column, String value){
+        Course course = new Course();
+
+        try {
+            Map<String, String> whereParam = new HashMap<String, String>();
+            whereParam.put(column, value);
+
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, whereParam, null);
+            rowSet.next();
+            course.setId(rowSet.getString(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+            course.setCode(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
+            course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
+
+
+        } catch(SQLException ex){
+            ex.getMessage();
+
+
+        }
+        return course;
+    }
+
+    private static Lecture getSingleLecture(String column, String value) {
+        Lecture lecture = new Lecture();
+
+        try {
+
+            Map<String, String> whereParam = new HashMap<String, String>();
+            whereParam.put(column, value);
+
+            CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, whereParam, null);
+            rowSet.next();
+
+            lecture.setLectureId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
+
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+
+        return lecture;
+    }
+
+
 
 }

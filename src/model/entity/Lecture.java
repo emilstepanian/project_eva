@@ -47,12 +47,12 @@ public class Lecture {
         this.id = id;
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
     }
 
     public String getType() {
@@ -87,16 +87,8 @@ public class Lecture {
         this.end = end;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
     }
 
     public void setEndDate(Date endDate) {
