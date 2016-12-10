@@ -90,10 +90,11 @@ public class DBWrapper {
 
 
     /**
-     * NOTE: IT IS UNUSED AND NOT WORKING. POSSIBLY REQUIRES FIXING IF A CLIENT IS
-     * IMPLEMENTED DIFFERENTLY THAN eva_client
+     * @deprecated
+     * IT IS UNUSED AND NOT WORKING. POSSIBLY REQUIRES FIXING IF A CLIENT IS
+     * IMPLEMENTED DIFFERENTLY THAN eva_client.
      *
-     * This metods is only used by getRecords() to build the second part of the SQL-statement.
+     * This method is only used by getRecords() to build the second part of the SQL-statement.
      * Is there no JOINs wished, this is ignored. Otherwise, it builds the "JOIN" clause on the SQL-Statement.
      *
      * @param joins A <code>Map of Strings</code> that contains 'keys' and 'values' in the JOIN clause. e.g. "JOIN key ON value". Leave 'null' if no JOIN clause is needed.

@@ -47,6 +47,10 @@ public class Course {
         this.databaseId = databaseId;
     }
 
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
     public String getId() {
         return id;
     }

@@ -54,5 +54,9 @@
   "LECTURE_END_DATE_COLUMN":"end",
   "LECTURE_TYPE_COLUMN":"type",
   "LECTURE_LOCATION_COLUMN":"location",
-  "LECTURE_DESCRIPTION_COLUMN":"description"
+  "LECTURE_DESCRIPTION_COLUMN":"description",
+
+  "CBS_STUDY_SHORTNAME" : "shortname",
+  "CBS_STUDY_STUDY_NAME" : "study-name"
+
 }

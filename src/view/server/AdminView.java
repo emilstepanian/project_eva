@@ -1,14 +1,20 @@
 package view.server;
 
+import dal.DBWrapper;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import logic.controller.AdminController;
 import logic.misc.ConfigLoader;
 import logic.misc.I18NLoader;
 import model.entity.Course;
+import model.entity.Lecture;
 import model.entity.Review;
 import model.entity.Study;
 import model.user.User;
 
+import javax.sql.rowset.CachedRowSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -234,6 +240,45 @@ public class AdminView {
     private void deleteUserView() {
         input.nextLine();
         try {
+            System.out.println("Do you know the ID of the user? \nPress [ 1 ] if you do,\nPress [ 2 ] if you do not. (navigate to the user)");
+
+            int choice = input.nextInt();
+
+            if(choice == 1) {
+
+                deleteUser();
+
+            } else if(choice == 2) {
+
+                CachedRowSet userRowSet = DBWrapper.getRecords(ConfigLoader.USER_TABLE, null, null, null);
+
+                while (userRowSet.next()){
+
+                    System.out.println("ID: " + userRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
+                            + " - " + userRowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN) + " " +
+                    userRowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN) + ", " + userRowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
+
+                }
+
+                deleteUser();
+
+
+            } else {
+            System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+        }
+
+
+        } catch (Exception ex) {
+            System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
+            System.out.println(ex.getMessage());
+            System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
+        }
+        input.nextLine();
+    }
+
+
+    private void deleteUser() {
+        try {
             System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER_TO_DELETE + ": ");
 
             User user = (User) adminCtrl.getSingleRecord(input.nextInt(), 1);
@@ -256,7 +301,6 @@ public class AdminView {
             System.out.println(ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
-        input.nextLine();
     }
 
     /**
@@ -266,33 +310,103 @@ public class AdminView {
         input.nextLine();
         try {
 
-            System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_REVIEW_TO_DELETE +  ": ");
 
-            Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 4);
+            System.out.println("Do you know the ID of the review? \nPress [ 1 ] if you do,\nPress [ 2 ] if you do not. (navigate to the review)");
+            int choice = input.nextInt();
 
-            System.out.println(I18NLoader.YOU_WANT_TO_DELETE_REVIEW + "\n" + I18NLoader.RATING_WORD + ":" + review.getRating() +
-                    "\n" + I18NLoader.COMMENT_WORD + ": " + review.getComment());
-            System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
+            if(choice == 1) {
 
-            int confirm = input.nextInt();
+                deleteReview();
 
-            if (confirm == 1) {
-                if (adminCtrl.softDeleteReview(review.getId())) {
-                    System.out.println(I18NLoader.REVIEW_DELETED + ".");
-                } else {
-                    System.out.println(I18NLoader.REVIEW_NOT_DELETED + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+            } else if(choice == 2){
+
+                CachedRowSet coursesRowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, null, null);
+
+                while (coursesRowSet.next()){
+                    Thread.sleep(1);
+
+
+                    System.out.println("ID: " + coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
+                            + " - " + coursesRowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
+
                 }
-            } else if (confirm == 2) {
-                System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
+
+                System.out.println("\n\nEnter the ID of the course, containing the lecture and the review: ");
+                int chosenCourseId = input.nextInt();
+
+                coursesRowSet.restoreOriginal();
+                while(coursesRowSet.next()){
+                    if(coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) == chosenCourseId){
+                        Map<String, String> whereParam = new HashMap<String, String>();
+                        whereParam.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, coursesRowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
+
+                        CachedRowSet lecturesRowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, whereParam, null);
+
+                        while(lecturesRowSet.next()){
+                            Thread.sleep(50);
+
+                            System.out.println("\nLecture - ID:" + lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +  "\n - " + lecturesRowSet.getString(ConfigLoader.LECTURE_DESCRIPTION_COLUMN) +
+                            "\n - Location: " + lecturesRowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN)+
+                            "\n - Date: " + lecturesRowSet.getDate(ConfigLoader.LECTURE_START_DATE_COLUMN));
+                            System.out.println(" - Reviews:");
+
+                            Map<String, String> reviewWhereParams = new HashMap<String, String>();
+                            reviewWhereParams.put(ConfigLoader.REVIEW_IS_DELETED_COLUMN, ConfigLoader.REVIEW_IS_DELETED_VALUE_FALSE);
+                            reviewWhereParams.put(ConfigLoader.REVIEW_LECTURE_ID_COLUMN, String.valueOf(lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)));
+
+                            CachedRowSet lectureReviewsRowSet = DBWrapper.getRecords(ConfigLoader.REVIEW_TABLE, null, reviewWhereParams, null);
+
+                            while (lectureReviewsRowSet.next()){
+
+                                System.out.println("     - ID: " + lectureReviewsRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +
+                                ": Rating: (" + lectureReviewsRowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN) + "/5)" +
+                                " - Comment: " + lectureReviewsRowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
+
+                            }
+                        }
+                        deleteReview();
+                    }
+                }
+
+
             } else {
                 System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
             }
+
+
         } catch (Exception ex){
             input.nextLine();
             System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
             System.out.println(ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
+    }
+
+
+    private void deleteReview() {
+
+        System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_REVIEW_TO_DELETE +  ": ");
+
+        Review review = (Review) adminCtrl.getSingleRecord(input.nextInt(), 4);
+
+        System.out.println(I18NLoader.YOU_WANT_TO_DELETE_REVIEW + "\n" + I18NLoader.RATING_WORD + ":" + review.getRating() +
+                "\n" + I18NLoader.COMMENT_WORD + ": " + review.getComment());
+        System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
+
+        int confirm = input.nextInt();
+
+        if (confirm == 1) {
+            if (adminCtrl.softDeleteReview(review.getId())) {
+                System.out.println(I18NLoader.REVIEW_DELETED + ".");
+            } else {
+                System.out.println(I18NLoader.REVIEW_NOT_DELETED + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+            }
+        } else if (confirm == 2) {
+            System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
+        } else {
+            System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+        }
+
     }
 
 }

@@ -89,23 +89,23 @@ public class CBSParser implements Runnable {
                 Check if the Study is already in the database.
                 If not, then insert it. Values are specific to CBS' API, and therefore not interchangeable.
                  */
-                if(!duplicatesCheck.contains(obj.get("shortname").toString().replace("\"", "").substring(0,5))){
+                if(!duplicatesCheck.contains(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5))){
 
-                    if(!databaseCheck.contains(obj.get("shortname").toString().replace("\"", "").substring(0,5))){
+                    if(!databaseCheck.contains(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5))){
 
-                        studyValues.put("shortname",obj.get("shortname").toString().replace("\"", "").substring(0,5));
-                        studyValues.put("name",obj.get("study-name").toString().replace("\"", ""));
-                        duplicatesCheck.add(obj.get("shortname").toString().replace("\"", "").substring(0,5));
-                        DBWrapper.insertIntoRecords("study", studyValues);
+                        studyValues.put(ConfigLoader.STUDY_SHORTNAME_COLUMN,obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5));
+                        studyValues.put(ConfigLoader.STUDY_NAME_COLUMN,obj.get(ConfigLoader.CBS_STUDY_STUDY_NAME).toString().replace("\"", ""));
+                        duplicatesCheck.add(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5));
+                        DBWrapper.insertIntoRecords(ConfigLoader.STUDY_TABLE, studyValues);
 
                     } else {
 
-                        Study studyToUpdate = (Study) getSingleRecord(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get("shortname").toString().replace("\"", "").substring(0, 5),  1);
+                        Study studyToUpdate = (Study) getSingleRecord(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0, 5),  1);
 
                         Map<String, String> updatedStudyValues = new HashMap<String, String>();
 
-                        updatedStudyValues.put(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get("shortname").toString().replace("\"", "").substring(0, 5));
-                        updatedStudyValues.put(ConfigLoader.STUDY_NAME_COLUMN, obj.get("study-name").toString().replace("\"", ""));
+                        updatedStudyValues.put(ConfigLoader.STUDY_SHORTNAME_COLUMN, obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0, 5));
+                        updatedStudyValues.put(ConfigLoader.STUDY_NAME_COLUMN, obj.get(ConfigLoader.CBS_STUDY_STUDY_NAME).toString().replace("\"", ""));
 
                         Map<String, String> whereParam = new HashMap<String, String>();
 
@@ -113,7 +113,7 @@ public class CBSParser implements Runnable {
 
                         DBWrapper.updateRecords(ConfigLoader.STUDY_TABLE, updatedStudyValues, whereParam);
 
-                        duplicatesCheck.add(obj.get("shortname").toString().replace("\"", "").substring(0, 5));
+                        duplicatesCheck.add(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0, 5));
 
 
                     }
@@ -181,7 +181,7 @@ public class CBSParser implements Runnable {
 
                     Map<String, String> updatedCourseValues = new HashMap<String, String>();
 
-                    updatedCourseValues.put(ConfigLoader.COURSE_NAME_COLUMN, "hej");
+                    updatedCourseValues.put(ConfigLoader.COURSE_NAME_COLUMN, course.getDisplaytext());
 
                     Map<String, String> whereParam = new HashMap<String, String>();
 
@@ -215,7 +215,6 @@ public class CBSParser implements Runnable {
 
         CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES, ConfigLoader.COURSE_CODE_COLUMN}, null, null);
 
-        //Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.LECTURE_TABLE, ConfigLoader.LECTURE_COURSE_CODE_COLUMN);
 
         try{
 

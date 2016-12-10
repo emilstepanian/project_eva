@@ -90,6 +90,10 @@ public class ConfigLoader {
     public static String LECTURE_LOCATION_COLUMN;
     public static String LECTURE_DESCRIPTION_COLUMN;
 
+    //Attributes specific to CBS' API
+    public static String CBS_STUDY_SHORTNAME;
+    public static String CBS_STUDY_STUDY_NAME;
+
 
 
     /**
