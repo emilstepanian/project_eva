@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ *  * Specifies the User model object.
  */
 public class User implements Serializable {
 
@@ -12,11 +13,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-    //Must be defined
-    public User() {
-    }
-
+    public User() {}
 
     public int getId() {
         return id;

@@ -19,7 +19,8 @@ import java.util.*;
  * Created by Kasper on 15/10/2016.
  * Class that retrieves and reads data from CBS' Calendar API in JSON format.
  * It parses the JSON data into objects inside the system and thereafter parses
- * them into the database
+ * them into the database. CBSParser implements Runnable, as it needs to run on a
+ * separate thread that continuously once every day updates the objects from CBS' API.
  */
 public class CBSParser implements Runnable {
     private static Course[] courseArray;
@@ -70,6 +71,9 @@ public class CBSParser implements Runnable {
 
         Set<String> duplicatesCheck = new HashSet<String>();
 
+        /*
+            Get studies from the database, if any are registered
+         */
         Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.STUDY_TABLE, ConfigLoader.STUDY_SHORTNAME_COLUMN);
 
         try {
@@ -86,11 +90,15 @@ public class CBSParser implements Runnable {
 
 
                 /*
-                Check if the Study is already in the database.
+                Check if the Study is already in the duplicates check set.
                 If not, then insert it. Values are specific to CBS' API, and therefore not interchangeable.
+                The replace method from the String class is used to remove the '"' characters from the strings.
                  */
                 if(!duplicatesCheck.contains(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5))){
 
+                    /*
+                    Next it checks whether or not the study is already registered in the database. If not, create it, else update it.
+                     */
                     if(!databaseCheck.contains(obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5))){
 
                         studyValues.put(ConfigLoader.STUDY_SHORTNAME_COLUMN,obj.get(ConfigLoader.CBS_STUDY_SHORTNAME).toString().replace("\"", "").substring(0,5));
@@ -139,14 +147,18 @@ public class CBSParser implements Runnable {
             Map<String, String> studyAttributes = new HashMap<String, String>();
             Map<String, String> courseMap = new HashMap<String, String>();
 
+
             CachedRowSet rs = DBWrapper.getRecords(ConfigLoader.STUDY_TABLE, new String[]{ConfigLoader.ID_COLUMN_OF_ALL_TABLES,ConfigLoader.STUDY_SHORTNAME_COLUMN}, null, null);
 
+            /*
+            Get courses from the database, if any are registered
+             */
             Set<String> databaseCheck = retrieveCurrentEntityRecords(ConfigLoader.COURSE_TABLE, ConfigLoader.COURSE_CODE_COLUMN);
 
-        /*
+           /*
            Go through the list of studies pulled from the database and save the five first characters of its shortname
            together with the matching ID from the database in the studyAttributes hashmap
-        */
+           */
             while(rs.next()){
 
 
@@ -156,12 +168,15 @@ public class CBSParser implements Runnable {
             }
 
 
-        /*
+           /*
            Go through the array of courses and check if there is any matches between the courses and studies in the studyAttribute hashmap.
            If so, insert the course in the database with the matching study_id
-         */
+           */
             for (Course course : courseArray) {
 
+                /*
+                However, first it checks whether or not the course is already registered in the database. If not, create it, else update it
+                 */
                 if (!databaseCheck.contains(course.getId())) {
 
                     String substring = course.getId().substring(0, 5);
@@ -202,8 +217,7 @@ public class CBSParser implements Runnable {
     }
 
     /**
-     * Creates records in the lecture table in the database.
-     * @throws SQLException
+     * Parses and inserts records in the lecture table in the database.
      */
     private static void parseLecturesToDatabase() throws SQLException{
 
@@ -249,10 +263,10 @@ public class CBSParser implements Runnable {
                             for (Lecture lecture : course.getEvents()) {
 
                                 /*
-                                Error found here. As it is not possible to get the ID from the incoming lectures from CBS, as it is autoincremented,
+                                Error found here. As it is not possible to get the ID from the incoming lectures from CBS, as it is auto-incremented in our own database,
                                 this was thought as a solution to pinpoint the specific lecture in the database, using the other values of the it.
-                                However, the error is that these values are changed if an update to a lecture happens, and therefore it wont match.
-                                This cancels out the whole idea of this algorithm in the first place. It is left for future improvements.
+                                However, the error is that these values are changed if an update to a lecture happens, and therefore it will never find a match in the database.
+                                This cancels out the whole idea of this algorithm in the first place. It is however left for future improvements.
                                  */
 
                                 lectureMap = new HashMap<String, String>();
@@ -324,6 +338,7 @@ public class CBSParser implements Runnable {
         //Builds the String so it matches with the DateTime object
         dateBuilder.append(dateData.get(0));
         dateBuilder.append("-");
+
         //increments the month of the date by one, as there is an error in CBS' API showing dates that are a month behind.
         int month = Integer.parseInt(dateData.get(1))+1;
         dateBuilder.append(String.valueOf(month));
@@ -340,6 +355,13 @@ public class CBSParser implements Runnable {
 
     }
 
+    /**
+     * Method used to retrieve the needed entities from the database in any specific situation in the CBSParser
+     * @param table the table to retrieve data from
+     * @param column the column inside the table that is needed to use as a "already registered" checker.
+     *               As the ID of the entities are not coming from the CBS' API, the system is not able to do the check by IDs
+     * @return The set of records of the one column
+     */
     private static Set<String> retrieveCurrentEntityRecords(String table, String column){
         Set<String> dbEntities = new HashSet<String>();
         String[] attributes = {column};
@@ -374,6 +396,14 @@ public class CBSParser implements Runnable {
     }
 
 
+    /**
+     * Used by the parser to get the single record that matches an entity coming from the CBS' API, to be able to update it
+     * @param column the column inside the table that is needed to use as a "already registered" checker.
+     *               As the ID of the entities are not coming from the CBS' API, the system is not able to do the check by IDs
+     * @param value The specific value from the column that is needed to construct the WHERE param
+     * @param modification specifies what kind of entity is wished to be returned
+     * @return the specific entity object that was selected by the modification
+     */
     private static Object getSingleRecord(String column, String value, int modification){
         switch (modification){
             case 1:
@@ -390,8 +420,7 @@ public class CBSParser implements Runnable {
 
     /**
      * Used by getSingleRecord() to return a Study
-     * of the study to return
-     * @return Returns the specified Study.
+     * @return the specified Study.
      */
     private static Study getSingleStudy(String column, String value){
         Study study = new Study();
@@ -413,7 +442,10 @@ public class CBSParser implements Runnable {
         return study;
     }
 
-
+    /**
+     * Used by getSingleRecord() to return a Course
+     * @return the specified Course.
+     */
    private static Course getSingleCourse(String column, String value){
         Course course = new Course();
 
@@ -435,7 +467,10 @@ public class CBSParser implements Runnable {
         }
         return course;
     }
-
+    /**
+     * Used by getSingleRecord() to return a Lecture
+     * @return the specified Lecture.
+     */
     private static Lecture getSingleLecture(String column, String value) {
         Lecture lecture = new Lecture();
 

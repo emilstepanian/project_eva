@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Handles any requests from a client trying to connect to the server.
  */
 @Path("api")
 public class ClientEndpoints {
@@ -27,7 +28,7 @@ public class ClientEndpoints {
     /**
      * Endpoint used to receive client data to authenticate a client
      * @param encryptedLoginCredentials The login credentials of the client received as json and encrypted
-     * @return  The authenticated client as json
+     * @return The authenticated client as json
      */
     @POST
     @Consumes("application/json")
@@ -76,7 +77,7 @@ public class ClientEndpoints {
      * Endpoint used to retrieve statistics for a specific lecture
      * @param lectureId The ID of the lecture
      * @param courseId The ID of that lecture's course
-     * @return Returns a Map with the lecture's statistics as json.
+     * @return a Map with the lecture's statistics as json.
      */
     @GET
     @Consumes("application/json")
@@ -114,7 +115,7 @@ public class ClientEndpoints {
     /**
      * Endpoint used to soft-delete reviews of a specific lecture
      * @param encryptedReview The review to be soft-deleted received as JSON and encrypted
-     * @return Returns a http response 200 and confirms that it is deleted
+     * @return a http response 200 and confirms that it is deleted
      */
     @PUT
     @Consumes("application/json")
@@ -139,7 +140,7 @@ public class ClientEndpoints {
     /**
      * Endpoint used to add reviews of a specific lecture to the database
      * @param encryptedReview The review to be added received as JSON and encrypted
-     * @return Returns a http response 200 and confirms that it is added
+     * @return a http response 200 and confirms that it is added
      */
     @POST
         @Consumes("application/json")

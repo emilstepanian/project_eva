@@ -2,6 +2,7 @@ package model.entity;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Specifies the Study model object.
  */
 public class Study {
 

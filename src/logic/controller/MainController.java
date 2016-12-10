@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Class controls and adds the functionality of the main view of the server.
  */
 public class MainController {
 

@@ -19,6 +19,8 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Class extends UserController and controls an admin's functionality in the server,
+ * and adds any specific logic for the admin
  */
 public class AdminController extends UserController {
 
@@ -29,6 +31,11 @@ public class AdminController extends UserController {
     public void createUser(User newUser){
 
         try {
+
+            /*
+            Check's whether the email is already used in the database,
+            before registering the new user
+             */
 
             if(userExists(newUser.getCbsMail()) == false){
 
@@ -108,7 +115,8 @@ public class AdminController extends UserController {
     }
 
     /**
-     * Soft deletes a user.
+     * Deletes a user from the system by first deleting all records in the course_attendant table regarding the user,
+     * and then all reviews in the review table
      * @param userId The ID of the user who needs to get deleted
      */
     public void deleteUser(int userId){
@@ -118,7 +126,12 @@ public class AdminController extends UserController {
             courseAttendantWhereParam.put(ConfigLoader.COURSEATTENDANTS_USER_ID_COLUMN, String.valueOf(userId));
             DBWrapper.deleteRecords(ConfigLoader.COURSEATTENDANTS_TABLE, courseAttendantWhereParam);
 
-            //Next, delete from user table
+            //Next, delete any reviews written by the user from review table
+            Map<String, String> reviewsWhereParam = new HashMap<String, String>();
+            reviewsWhereParam.put(ConfigLoader.REVIEW_USER_ID_COLUMN, String.valueOf(userId));
+            DBWrapper.deleteRecords(ConfigLoader.REVIEW_TABLE, reviewsWhereParam);
+
+            //Ultimately, delete from user table
             Map<String, String > userWhereParam = new HashMap<String, String>();
             userWhereParam.put(ConfigLoader.ID_COLUMN_OF_ALL_TABLES, String.valueOf(userId));
             DBWrapper.deleteRecords(ConfigLoader.USER_TABLE, userWhereParam);
@@ -161,7 +174,7 @@ public class AdminController extends UserController {
     /**
      * Used by getSingleRecord() to return a User
      * @param userId ID of the user to return
-     * @return Returns the specified User.
+     * @return the specified User.
      */
     private User getSingleUser(int userId){
         User user = new User();
@@ -188,7 +201,7 @@ public class AdminController extends UserController {
     /**
      * Used by getSingleRecord() to return a Study
      * @param studyId ID of the study to return
-     * @return Returns the specified Study.
+     * @return the specified Study.
      */
     private Study getSingleStudy(int studyId){
             Study study = new Study();
@@ -213,7 +226,7 @@ public class AdminController extends UserController {
     /**
      * Used by getSingleRecord() to return a Study
      * @param courseId ID of the course to return
-     * @return Returns the specified Course.
+     * @return the specified Course.
      */
     private Course getSingleCourse(int courseId){
         Course course = new Course();
@@ -225,7 +238,6 @@ public class AdminController extends UserController {
             CachedRowSet rowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, whereParam, null);
             rowSet.next();
             course.setId(rowSet.getString(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
-            //course.setEvents(rowSet.getString("shortname"));
             course.setCode(rowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
             course.setDisplaytext(rowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
 
@@ -241,7 +253,7 @@ public class AdminController extends UserController {
     /**
      * Used by getSingleRecord() to return a Review.
      * @param reviewId ID of the review to return
-     * @return Returns the specified Review
+     * @return the specified Review
      */
     private Review getSingleReview(int reviewId){
         Review review = new Review();
@@ -270,7 +282,7 @@ public class AdminController extends UserController {
     /**
      * Checks whether a User exists or does not in the database
      * @param cbs_mail the CBS Mail address of the user
-     * @return Returns a boolean value indicating if user exists or not.
+     * @return a boolean value indicating if user exists or not.
      */
     private boolean userExists(String cbs_mail){
         Boolean userExists = false;
@@ -293,6 +305,11 @@ public class AdminController extends UserController {
         return userExists;
     }
 
+
+    /**
+     * Catches and prints any exceptions thrown together with convenient "view" information for the admin
+     * @param ex the exception thrown
+     */
     private void catchMessage(Exception ex){
         System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
 

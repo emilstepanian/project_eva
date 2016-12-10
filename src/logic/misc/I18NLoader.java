@@ -11,6 +11,11 @@ import java.util.Set;
 
 /**
  * Created by emilstepanian on 26/11/2016.
+ * I18NLoader is used to load the chosen i18n language file into the system.
+ * Every possible system message in the console is referencing these variables,
+ * to easily be able to change the language of the server. If a new language is
+ * desired, simply copy and translate the i18n_GB.dist.json file and rename it to your
+ * country's abbreviation and specify it in the config.json file.
  */
 public class I18NLoader {
 
@@ -123,14 +128,9 @@ public class I18NLoader {
     public static String USER_NOT_ADMIN;
 
 
-
-
-
-
     /**
      * Not more than one ConfigLoader can be instantiated, why it is a SINGLETON.
      * The ConfigLoader HAS to be instantiated, before the static variables can be called.
-     *
      */
     private static final I18NLoader SINGLETON = new I18NLoader();
 
@@ -138,15 +138,15 @@ public class I18NLoader {
         return SINGLETON;
     }
 
-    /**
-     * Parses the config as it is instantiated at initialization.
+    /*
+      Parses the language as it is instantiated at ConfigLoader.
      */
     private I18NLoader() {
         parseLanguage();
     }
 
-    /**
-     * Parses the config.file into the system
+    /*
+      Parses the chosen i18n.file into the system
      */
     public static void parseLanguage() {
         JsonParser jparser = new JsonParser();

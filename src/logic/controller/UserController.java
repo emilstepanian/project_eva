@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 21/11/2016.
+ * An abstract class that controls and adds common functionality for the users of the system
  */
 public abstract class UserController {
 
@@ -114,6 +115,8 @@ public abstract class UserController {
 
     /**
      * Retrieves reviews for any given WHERE parameters.
+     * The parsing from the database to review objects are used by multiple methods, and therefore,
+     * this method is constructed instead of just using the the getRecords() method in the DBWrapper
      * @param whereParams the WHERE parameter wished to match on.
      * @return ArrayList containing Review objects
      */
@@ -153,7 +156,6 @@ public abstract class UserController {
      * Soft deletes a specified review. Can be used in two situations.
      * Method used when a student wishes to delete his own review,
      * or when a teacher or an admin wishes to delete any review.
-     * @param userId Used for first use-case. The specific student's userId. Pass '0' if teacher or admin.
      * @param reviewId The review ID of the review that is wished deleted.
      * @return Boolean value indicating whether review is deleted succesfully or not.
      */

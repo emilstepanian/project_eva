@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Handles the encryption and hashing of the server
  */
 public class Digester {
 

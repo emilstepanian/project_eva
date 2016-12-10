@@ -7,7 +7,8 @@ import java.util.logging.Logger;
 
 /**
  * Created by emilstepanian on 19/11/2016.
- * CustomLogger creates a custom logger for the system to assist in debugging.
+ * CustomLogger creates a custom logger for the system to assist in debugging,
+ * should any system shut downs or errors occur
  */
 public class CustomLogger {
 

@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * The view a user is presented to in the console, when the server has started.
  */
 public class MainView {
 

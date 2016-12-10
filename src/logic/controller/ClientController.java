@@ -9,12 +9,18 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * Class extends the UserController and adds functionality for students of the system
  */
 public class ClientController extends UserController {
 
-    public ClientController() {
-    }
 
+    public ClientController() {}
+
+    /**
+     * Used to add a review object to the database
+     * @param review the review to be added to the database
+     * @return a boolean that tells whether or not the review was added
+     */
     public boolean addReview(Review review) {
         boolean isAdded = true;
 

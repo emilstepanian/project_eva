@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * The main class that instantiates everything and starts the server
  */
 public class Main {
 
@@ -45,25 +46,34 @@ public class Main {
 
             server = createHttpServer(sUrl);
 
-            //Turn of Jersey logging.
+            /*
+            Turn of Jersey logging, as the Jersey logger for some reason keep displaying 'INFO' messages that aren't errors.
+            Simply outcomment the for-loop, if one needs to see the console-messages
+             */
             for (String l :
                     Collections.list(LogManager.getLogManager().getLoggerNames())) {
                 if (l.startsWith("com.sun.jersey")) {
                         Logger.getLogger(l).setLevel(Level.OFF);
                 }
             }
+
             server.start();
 
+            /*
+            Initialize the custom logger
+             */
             CustomLogger.initiateLog(ConfigLoader.DEBUG);
 
-            //Runs the CBSParser once every day
+            /*
+            Initialize and run the CBSParser thread once every day
+             */
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(new CBSParser(), 0, 1, TimeUnit.DAYS);
 
+            /*
+            Instantiate the main view of the server
+             */
             new MainView();
-
-
-
 
 
         } catch(Exception ex){
@@ -72,6 +82,12 @@ public class Main {
 
         }
     }
+
+    /**
+     * Method used to get the server URL and add the CORSResponseFilter, before creating and starting the server.
+     * @param sUrl the URL of the server
+     * @return the HTTPServer object that has been created by the HTTPServerFactory
+     */
     private static HttpServer createHttpServer(String sUrl) throws IOException {
         ResourceConfig customResponseConfig = new PackagesResourceConfig("view.client");
         customResponseConfig.getContainerResponseFilters().add(new CORSResponseFilter());

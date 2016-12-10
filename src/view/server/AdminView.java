@@ -19,6 +19,7 @@ import java.util.Scanner;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ * The view an Admin is presented to in the console, when he is logged in from the main view.
  */
 public class AdminView {
 
@@ -123,6 +124,9 @@ public class AdminView {
             System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.SCHOOL_ABBREVIATION + " " + I18NLoader.MAIL_WORD + ": ");
             newUser.setCbsMail(input.nextLine());
 
+            /*
+            Loop for checking the entered password
+             */
             do {
                 System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.PASSWORD_WORD + ": ");
                 newUser.setPassword(input.nextLine());
@@ -149,6 +153,10 @@ public class AdminView {
         int choice = input.nextInt();
 
         switch (choice) {
+            /*
+            Case 1, if a whole study is being assigned to the user. Simply gets all the courses connected to the study,
+            and assigns them one by one
+             */
             case 1:
                 try {
                     input.nextLine();
@@ -191,43 +199,46 @@ public class AdminView {
                     break;
                 }
 
-                case 2:
-                    try {
+                /*
+                Case 2, if the admin only wants to assign a single course to the user
+                 */
+            case 2:
+                try {
 
-                        System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER + ": ");
-                        int studentId = input.nextInt();
+                    System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER + ": ");
+                    int studentId = input.nextInt();
 
-                        User user = (User) adminCtrl.getSingleRecord(studentId, 1);
+                    User user = (User) adminCtrl.getSingleRecord(studentId, 1);
 
-                        System.out.println(I18NLoader.YOU_HAVE_CHOSEN_USER + ": " + user.getFirstName() + " " + user.getLastName());
+                    System.out.println(I18NLoader.YOU_HAVE_CHOSEN_USER + ": " + user.getFirstName() + " " + user.getLastName());
 
 
-                        System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_COURSE + ": ");
-                        int courseId = input.nextInt();
-                        Course course = (Course) adminCtrl.getSingleRecord(courseId, 3);
-                        System.out.println(I18NLoader.YOU_HAVE_CHOSEN_COURSE + ": " + course.getDisplaytext());
-                        System.out.println(I18NLoader.YOU_WANT_TO_ASSIGN_THE_COURSES_FOR + " " + user.getFirstName() + "?");
-                        System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
-                        int confirm = input.nextInt();
-                        if(confirm == 1){
-                            adminCtrl.assignSingleCourse(studentId, courseId);
-                            System.out.println(I18NLoader.COURSES_SUCCESSFULLY_ASSIGNED);
-                            break;
-                        } else if(confirm == 2) {
-                            System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
-                            break;
-                        } else {
-                            System.out.println(I18NLoader.INVALID_INPUT + ".\n " + I18NLoader.REVERTING_TO_MAINMENU);
-                            break;
-                        }
-
-                    } catch(Exception ex){
-                        input.nextLine();
-                        System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + ". " + I18NLoader.DID_NOT_ASSIGN_COURSES);
-                        System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
-
+                    System.out.print(I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_COURSE + ": ");
+                    int courseId = input.nextInt();
+                    Course course = (Course) adminCtrl.getSingleRecord(courseId, 3);
+                    System.out.println(I18NLoader.YOU_HAVE_CHOSEN_COURSE + ": " + course.getDisplaytext());
+                    System.out.println(I18NLoader.YOU_WANT_TO_ASSIGN_THE_COURSES_FOR + " " + user.getFirstName() + "?");
+                    System.out.println("[ 1 ] " + I18NLoader.YES_WORD + " \n[ 2 ] " + I18NLoader.NO_WORD);
+                    int confirm = input.nextInt();
+                    if(confirm == 1){
+                        adminCtrl.assignSingleCourse(studentId, courseId);
+                        System.out.println(I18NLoader.COURSES_SUCCESSFULLY_ASSIGNED);
+                        break;
+                    } else if(confirm == 2) {
+                        System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
+                        break;
+                    } else {
+                        System.out.println(I18NLoader.INVALID_INPUT + ".\n " + I18NLoader.REVERTING_TO_MAINMENU);
                         break;
                     }
+
+                } catch(Exception ex){
+                    input.nextLine();
+                    System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + ". " + I18NLoader.DID_NOT_ASSIGN_COURSES);
+                    System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
+
+                    break;
+                }
             default:
                 System.out.println( I18NLoader.INVALID_KEY_PRESSED + ". \n" + I18NLoader.REVERTING_TO_MAINMENU + "...\n");
                 return;
@@ -246,11 +257,19 @@ public class AdminView {
 
             int choice = input.nextInt();
 
+            /*
+            Case 1, the admin knows the ID and can simply enter it
+             */
             if(choice == 1) {
 
                 deleteUser();
 
+
+              /*
+              Case 2, prints and presents all the users in the system, to let the admin visibly being able to choose.
+              */
             } else if(choice == 2) {
+
 
                 CachedRowSet userRowSet = DBWrapper.getRecords(ConfigLoader.USER_TABLE, null, null, null);
 
@@ -258,16 +277,18 @@ public class AdminView {
 
                     System.out.println(I18NLoader.ID_ABBREVIATION + ": " + userRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
                             + " - " + userRowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN) + " " +
-                    userRowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN) + ", " + userRowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
+                            userRowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN) + ", " + userRowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
 
                 }
-
+                /*
+                Ultimately, calls the same method as case 1
+                 */
                 deleteUser();
 
 
             } else {
-            System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
-        }
+                System.out.println(I18NLoader.INVALID_INPUT + ".\n" + I18NLoader.REVERTING_TO_MAINMENU);
+            }
 
 
         } catch (Exception ex) {
@@ -279,6 +300,9 @@ public class AdminView {
     }
 
 
+    /**
+     * logic used by deleteUserView() in both cases is identical and therefore is extracted into a single method
+     */
     private void deleteUser() {
         try {
             System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_USER_TO_DELETE + ": ");
@@ -305,6 +329,7 @@ public class AdminView {
         }
     }
 
+
     /**
      * View for deleting a review
      */
@@ -317,12 +342,21 @@ public class AdminView {
 
             int choice = input.nextInt();
 
+             /*
+            Case 1, the admin knows the ID and can simply enter it
+             */
             if(choice == 1) {
 
                 deleteReview();
 
+              /*
+              Case 2, prints and makes it possible for the admin to navigate to the correct review to delete.
+              */
             } else if(choice == 2){
 
+                /*
+                First, prints the courses to choose the lecture from.
+                 */
                 CachedRowSet coursesRowSet = DBWrapper.getRecords(ConfigLoader.COURSE_TABLE, null, null, null);
 
                 while (coursesRowSet.next()){
@@ -331,29 +365,42 @@ public class AdminView {
 
                     System.out.println(I18NLoader.ID_ABBREVIATION + ": " + coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
                             + " - " + coursesRowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
-
                 }
 
                 System.out.println("\n\n" + I18NLoader.ENTER_THE_ID_OF_THE_COURSE_CONTAINING_THE_LECTURE_AND_SPECIFIC_REVIEW +": ");
                 int chosenCourseId = input.nextInt();
 
+                /*
+                Restores the CachedRowSet to original state, to be able to match the chosen ID with the correct course,
+                so the system doesn't make a second call for the same information.
+                 */
                 coursesRowSet.restoreOriginal();
                 while(coursesRowSet.next()){
                     if(coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) == chosenCourseId){
+
+                        /*
+                        If entered course ID matches, retrieve the lectures by entering the course's code value
+                         */
                         Map<String, String> whereParam = new HashMap<String, String>();
                         whereParam.put(ConfigLoader.LECTURE_COURSE_CODE_COLUMN, coursesRowSet.getString(ConfigLoader.COURSE_CODE_COLUMN));
 
                         CachedRowSet lecturesRowSet = DBWrapper.getRecords(ConfigLoader.LECTURE_TABLE, null, whereParam, null);
 
+                        /*
+                        Print all the lectures belonging to the course
+                         */
                         while(lecturesRowSet.next()){
                             Thread.sleep(50);
 
                             System.out.println("\n" + I18NLoader.LECTURE_WORD + " - " + I18NLoader.LECTURE_WORD +":" + lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
                                     +  "\n - " + lecturesRowSet.getString(ConfigLoader.LECTURE_DESCRIPTION_COLUMN) +
-                            "\n - " + I18NLoader.LOCATION_WORD + ": " + lecturesRowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN)+
-                            "\n - " + I18NLoader.DATE_WORD + ": " + lecturesRowSet.getDate(ConfigLoader.LECTURE_START_DATE_COLUMN));
+                                    "\n - " + I18NLoader.LOCATION_WORD + ": " + lecturesRowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN)+
+                                    "\n - " + I18NLoader.DATE_WORD + ": " + lecturesRowSet.getDate(ConfigLoader.LECTURE_START_DATE_COLUMN));
                             System.out.println(" - " + I18NLoader.REVIEWS_WORD + ":");
 
+                            /*
+                            Also print all the reviews for each specific lecture
+                             */
                             Map<String, String> reviewWhereParams = new HashMap<String, String>();
                             reviewWhereParams.put(ConfigLoader.REVIEW_IS_DELETED_COLUMN, ConfigLoader.REVIEW_IS_DELETED_VALUE_FALSE);
                             reviewWhereParams.put(ConfigLoader.REVIEW_LECTURE_ID_COLUMN, String.valueOf(lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)));
@@ -363,11 +410,14 @@ public class AdminView {
                             while (lectureReviewsRowSet.next()){
 
                                 System.out.println("     - " + I18NLoader.ID_ABBREVIATION + ": " + lectureReviewsRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +
-                                ": " + I18NLoader.RATING_WORD + ": (" + lectureReviewsRowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN) + "/5)" +
-                                " - " + I18NLoader.COMMENT_WORD + ": " + lectureReviewsRowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
+                                        ": " + I18NLoader.RATING_WORD + ": (" + lectureReviewsRowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN) + "/5)" +
+                                        " - " + I18NLoader.COMMENT_WORD + ": " + lectureReviewsRowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
 
                             }
                         }
+                        /*
+                        Ultimately, calls the same method as case 1
+                         */
                         deleteReview();
                     }
                 }
@@ -386,7 +436,9 @@ public class AdminView {
         }
     }
 
-
+    /**
+     * logic used by deleteReviewView() in both cases is identical and therefore is extracted into a single method
+     */
     private void deleteReview() {
 
         System.out.print("\n" + I18NLoader.ENTER_WORD + " " + I18NLoader.ID_OF_THE_REVIEW_TO_DELETE +  ": ");

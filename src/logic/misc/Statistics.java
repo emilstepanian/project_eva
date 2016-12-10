@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * Created by emilstepanian on 21/11/2016.
+ * Class used to handle the logic for calculating statistics needed from the client.
  */
 public class Statistics {
 

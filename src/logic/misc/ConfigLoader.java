@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * ConfigLoader is used to load the config.file into the system
+ * ConfigLoader is used to load the config.file into the system.
+ * The config.file also contains the names of the tables and columns of the database,
+ * if a specific implementation of the server requires a similar database, however with other
+ * table and column names
  */
 public class ConfigLoader {
 
@@ -40,7 +43,6 @@ public class ConfigLoader {
     /*
     Table informations
      */
-
     public static String ID_COLUMN_OF_ALL_TABLES;
 
     //Table and column names of table containing users
@@ -80,7 +82,6 @@ public class ConfigLoader {
     public static String REVIEW_IS_DELETED_VALUE_FALSE;
     public static String REVIEW_IS_DELETED_VALUE_TRUE;
 
-
     //Table and column names of table containing lectures
     public static String LECTURE_TABLE;
     public static String LECTURE_COURSE_CODE_COLUMN;
@@ -99,7 +100,6 @@ public class ConfigLoader {
     /**
      * Not more than one ConfigLoader can be instantiated, why it is a SINGLETON.
      * The ConfigLoader HAS to be instantiated, before the static variables can be called.
-     *
      */
     private static final ConfigLoader SINGLETON = new ConfigLoader();
 
@@ -107,15 +107,15 @@ public class ConfigLoader {
         return SINGLETON;
     }
 
-    /**
-     * Parses the config as it is instantiated at initialization.
+    /*
+      Parses the config as it is instantiated at initialization.
      */
     private ConfigLoader() {
         parseConfig();
     }
 
-    /**
-     * Parses the config.file into the system
+    /*
+      Parses the config.file into the system
      */
     public static void parseConfig() {
         JsonParser jparser = new JsonParser();
@@ -136,6 +136,9 @@ public class ConfigLoader {
                 }
             }
 
+            /*
+            Parses the chosen language of the system
+             */
             I18NLoader.parseLanguage();
 
         } catch (Exception e) {

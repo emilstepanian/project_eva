@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Created by emilstepanian on 19/11/2016.
+ *  * Specifies the Lecture model object.
+
  */
 public class Lecture {
 
