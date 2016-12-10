@@ -136,6 +136,8 @@ public class ConfigLoader {
                 }
             }
 
+            I18NLoader.parseLanguage();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

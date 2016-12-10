@@ -35,7 +35,6 @@ public class Main {
     public static void main(String[] args) {
 
         String sUrl = "http://" + ConfigLoader.SERVER_ADDRESS + ":" + ConfigLoader.SERVER_PORT + "/";
-        I18NLoader.parseLanguage();
         ConfigLoader.parseConfig();
         HttpServer server = null;
 

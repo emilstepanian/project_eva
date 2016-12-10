@@ -55,6 +55,8 @@ public class I18NLoader {
     public static String ENTER_WORD;
     public static String PASSWORD_WORD;
     public static String MAIL_WORD;
+    public static String LOCATION_WORD;
+    public static String DATE_WORD;
     public static String TO_WORD;
     public static String YES_WORD;
     public static String NO_WORD;
@@ -62,6 +64,11 @@ public class I18NLoader {
     public static String COMMENT_WORD;
     public static String RUNNING_WORD;
     public static String VISIT_WORD;
+    public static String USER_WORD;
+    public static String REVIEW_WORD;
+    public static String REVIEWS_WORD;
+    public static String LECTURE_WORD;
+    public static String ID_ABBREVIATION;
 
 
 
@@ -98,6 +105,11 @@ public class I18NLoader {
     public static String DID_NOT_ASSIGN_COURSES;
     public static String INVALID_KEY_PRESSED;
     public static String USER_SUCCESFULLY_DELETED;
+    public static String DO_YOU_KNOW_THE_ID_OF_THE;
+    public static String IF_YOU_DO;
+    public static String IF_YOU_DO_NOT;
+    public static String NAVIGATE_TO_THE;
+    public static String ENTER_THE_ID_OF_THE_COURSE_CONTAINING_THE_LECTURE_AND_SPECIFIC_REVIEW;
 
 
     //MainView messages
@@ -141,7 +153,7 @@ public class I18NLoader {
         JsonReader jsonReader;
 
         try {
-            jsonReader = new JsonReader(new FileReader("resources/i18n/" + ConfigLoader.LANGUAGE));
+            jsonReader = new JsonReader(new FileReader("resources/i18n/" + "i18n_" + ConfigLoader.LANGUAGE + ".json"));
             JsonObject jsonObject = jparser.parse(jsonReader).getAsJsonObject();
 
             Set<Map.Entry<String, JsonElement>> entries = jsonObject.entrySet();

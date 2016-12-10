@@ -240,7 +240,9 @@ public class AdminView {
     private void deleteUserView() {
         input.nextLine();
         try {
-            System.out.println("Do you know the ID of the user? \nPress [ 1 ] if you do,\nPress [ 2 ] if you do not. (navigate to the user)");
+            System.out.println(I18NLoader.DO_YOU_KNOW_THE_ID_OF_THE + " " + I18NLoader.USER_WORD + "?\n"
+                    + I18NLoader.PRESS_WORD + " [ 1 ] " + I18NLoader.IF_YOU_DO + ",\n" +
+                    I18NLoader.PRESS_WORD + " [ 2 ] " + I18NLoader.IF_YOU_DO_NOT + ". (" + I18NLoader.NAVIGATE_TO_THE + " " + I18NLoader.USER_WORD + ")");
 
             int choice = input.nextInt();
 
@@ -254,7 +256,7 @@ public class AdminView {
 
                 while (userRowSet.next()){
 
-                    System.out.println("ID: " + userRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
+                    System.out.println(I18NLoader.ID_ABBREVIATION + ": " + userRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
                             + " - " + userRowSet.getString(ConfigLoader.USER_FIRSTNAME_COLUMN) + " " +
                     userRowSet.getString(ConfigLoader.USER_LASTNAME_COLUMN) + ", " + userRowSet.getString(ConfigLoader.USER_CBSMAIL_COLUMN));
 
@@ -309,9 +311,10 @@ public class AdminView {
     private void deleteReviewView() {
         input.nextLine();
         try {
+            System.out.println(I18NLoader.DO_YOU_KNOW_THE_ID_OF_THE + " " + I18NLoader.REVIEW_WORD + "?\n"
+                    + I18NLoader.PRESS_WORD + " [ 1 ] " + I18NLoader.IF_YOU_DO + ",\n" +
+                    I18NLoader.PRESS_WORD + " [ 2 ] " + I18NLoader.IF_YOU_DO_NOT + ". (" + I18NLoader.NAVIGATE_TO_THE + " " + I18NLoader.REVIEW_WORD + ")");
 
-
-            System.out.println("Do you know the ID of the review? \nPress [ 1 ] if you do,\nPress [ 2 ] if you do not. (navigate to the review)");
             int choice = input.nextInt();
 
             if(choice == 1) {
@@ -326,12 +329,12 @@ public class AdminView {
                     Thread.sleep(1);
 
 
-                    System.out.println("ID: " + coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
+                    System.out.println(I18NLoader.ID_ABBREVIATION + ": " + coursesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
                             + " - " + coursesRowSet.getString(ConfigLoader.COURSE_NAME_COLUMN));
 
                 }
 
-                System.out.println("\n\nEnter the ID of the course, containing the lecture and the review: ");
+                System.out.println("\n\n" + I18NLoader.ENTER_THE_ID_OF_THE_COURSE_CONTAINING_THE_LECTURE_AND_SPECIFIC_REVIEW +": ");
                 int chosenCourseId = input.nextInt();
 
                 coursesRowSet.restoreOriginal();
@@ -345,10 +348,11 @@ public class AdminView {
                         while(lecturesRowSet.next()){
                             Thread.sleep(50);
 
-                            System.out.println("\nLecture - ID:" + lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +  "\n - " + lecturesRowSet.getString(ConfigLoader.LECTURE_DESCRIPTION_COLUMN) +
-                            "\n - Location: " + lecturesRowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN)+
-                            "\n - Date: " + lecturesRowSet.getDate(ConfigLoader.LECTURE_START_DATE_COLUMN));
-                            System.out.println(" - Reviews:");
+                            System.out.println("\n" + I18NLoader.LECTURE_WORD + " - " + I18NLoader.LECTURE_WORD +":" + lecturesRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES)
+                                    +  "\n - " + lecturesRowSet.getString(ConfigLoader.LECTURE_DESCRIPTION_COLUMN) +
+                            "\n - " + I18NLoader.LOCATION_WORD + ": " + lecturesRowSet.getString(ConfigLoader.LECTURE_LOCATION_COLUMN)+
+                            "\n - " + I18NLoader.DATE_WORD + ": " + lecturesRowSet.getDate(ConfigLoader.LECTURE_START_DATE_COLUMN));
+                            System.out.println(" - " + I18NLoader.REVIEWS_WORD + ":");
 
                             Map<String, String> reviewWhereParams = new HashMap<String, String>();
                             reviewWhereParams.put(ConfigLoader.REVIEW_IS_DELETED_COLUMN, ConfigLoader.REVIEW_IS_DELETED_VALUE_FALSE);
@@ -358,9 +362,9 @@ public class AdminView {
 
                             while (lectureReviewsRowSet.next()){
 
-                                System.out.println("     - ID: " + lectureReviewsRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +
-                                ": Rating: (" + lectureReviewsRowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN) + "/5)" +
-                                " - Comment: " + lectureReviewsRowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
+                                System.out.println("     - " + I18NLoader.ID_ABBREVIATION + ": " + lectureReviewsRowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES) +
+                                ": " + I18NLoader.RATING_WORD + ": (" + lectureReviewsRowSet.getInt(ConfigLoader.REVIEW_RATING_COLUMN) + "/5)" +
+                                " - " + I18NLoader.COMMENT_WORD + ": " + lectureReviewsRowSet.getString(ConfigLoader.REVIEW_COMMENT_COLUMN));
 
                             }
                         }
