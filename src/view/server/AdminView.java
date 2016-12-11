@@ -4,6 +4,7 @@ import dal.DBWrapper;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import logic.controller.AdminController;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import logic.misc.I18NLoader;
 import model.entity.Course;
 import model.entity.Lecture;
@@ -138,7 +139,7 @@ public class AdminView {
             adminCtrl.createUser(newUser);
         } catch(Exception ex) {
             System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
     }
@@ -194,6 +195,7 @@ public class AdminView {
 
                 } catch(Exception ex){
                     input.nextLine();
+                    CustomLogger.log(ex, 2, I18NLoader.DID_NOT_ASSIGN_COURSES);
                     System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + " . " + I18NLoader.DID_NOT_ASSIGN_COURSES);
                     System.out.println(I18NLoader.REVERTING_TO_MAINMENU);
                     break;
@@ -235,6 +237,7 @@ public class AdminView {
                 } catch(Exception ex){
                     input.nextLine();
                     System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED + ". " + I18NLoader.DID_NOT_ASSIGN_COURSES);
+                    CustomLogger.log(ex, 2, ex.getMessage());
                     System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
 
                     break;
@@ -293,7 +296,7 @@ public class AdminView {
 
         } catch (Exception ex) {
             System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
         input.nextLine();
@@ -324,7 +327,7 @@ public class AdminView {
             }
         } catch (Exception ex) {
             System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
     }
@@ -431,7 +434,7 @@ public class AdminView {
         } catch (Exception ex){
             input.nextLine();
             System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
             System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
         }
     }

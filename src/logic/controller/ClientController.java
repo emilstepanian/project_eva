@@ -2,6 +2,7 @@ package logic.controller;
 
 import dal.DBWrapper;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import model.entity.Review;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -36,8 +37,9 @@ public class ClientController extends UserController {
             DBWrapper.insertIntoRecords(ConfigLoader.REVIEW_TABLE, values);
             return isAdded;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            CustomLogger.log(ex, 2, ex.getMessage());
             isAdded = false;
         }
         return isAdded;

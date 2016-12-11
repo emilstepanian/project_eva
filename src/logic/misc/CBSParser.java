@@ -41,6 +41,8 @@ public class CBSParser implements Runnable {
 
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 3, ex.getMessage());
+
 
         }
 
@@ -55,8 +57,8 @@ public class CBSParser implements Runnable {
             //Reads the JSON file and creates an array with Course objects
             JsonReader reader = new JsonReader(new FileReader(ConfigLoader.COURSES_JSON));
             courseArray = gson.fromJson(reader, Course[].class);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            CustomLogger.log(ex, 3, ex.getMessage());
         }
     }
 
@@ -131,8 +133,9 @@ public class CBSParser implements Runnable {
             }
 
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            CustomLogger.log(ex, 3, ex.getMessage());
+
         }
 
     }
@@ -209,9 +212,7 @@ public class CBSParser implements Runnable {
 
 
         } catch(SQLException ex){
-
-            System.out.println(ex.getMessage());
-
+            CustomLogger.log(ex, 3, ex.getMessage());
 
         }
     }
@@ -312,9 +313,11 @@ public class CBSParser implements Runnable {
         }
         catch(MalformedURLException ex){
             ex.printStackTrace();
+            CustomLogger.log(ex, 3, ex.getMessage());
         }
         catch (IOException ex){
             ex.printStackTrace();
+            CustomLogger.log(ex, 3, ex.getMessage());
         }
 
     }
@@ -388,6 +391,7 @@ public class CBSParser implements Runnable {
 
 
         } catch (SQLException ex) {
+            CustomLogger.log(ex, 2, ex.getMessage());
 
 
         }
@@ -436,6 +440,8 @@ public class CBSParser implements Runnable {
             study.setName(rowSet.getString(ConfigLoader.STUDY_NAME_COLUMN));
 
         } catch(SQLException ex){
+            CustomLogger.log(ex, 2, ex.getMessage());
+
             ex.getMessage();
 
         }
@@ -461,7 +467,7 @@ public class CBSParser implements Runnable {
 
 
         } catch(SQLException ex){
-            ex.getMessage();
+            CustomLogger.log(ex, 2, ex.getMessage());
 
 
         }
@@ -485,7 +491,7 @@ public class CBSParser implements Runnable {
             lecture.setLectureId(rowSet.getInt(ConfigLoader.ID_COLUMN_OF_ALL_TABLES));
 
         } catch (SQLException ex) {
-            ex.getMessage();
+            CustomLogger.log(ex, 2, ex.getMessage());
         }
 
         return lecture;

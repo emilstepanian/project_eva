@@ -77,9 +77,7 @@ public class Main {
 
 
         } catch(Exception ex){
-
-            System.out.println(ex.getMessage());
-
+            CustomLogger.log(ex, 3, ex.getMessage());
         }
     }
 

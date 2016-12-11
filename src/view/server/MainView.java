@@ -3,6 +3,7 @@ package view.server;
 import logic.controller.AdminController;
 import logic.controller.MainController;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import logic.misc.I18NLoader;
 import model.user.User;
 import security.Digester;
@@ -72,8 +73,7 @@ public class MainView {
                         }
 
                     } catch (Exception ex) {
-                        System.out.println(ex.getMessage());
-
+                        CustomLogger.log(ex, 2, ex.getMessage());
                     }
                     break;
                 default:

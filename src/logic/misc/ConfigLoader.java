@@ -131,8 +131,9 @@ public class ConfigLoader {
                 try {
                     ConfigLoader.class.getDeclaredField(entry.getKey()).set(SINGLETON, entry.getValue().getAsString());
 
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                } catch (Exception ex) {
+                    CustomLogger.log(ex, 2, ex.getMessage());
+
                 }
             }
 
@@ -141,8 +142,9 @@ public class ConfigLoader {
              */
             I18NLoader.parseLanguage();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            CustomLogger.log(ex, 3, ex.getMessage());
         }
     }
 }

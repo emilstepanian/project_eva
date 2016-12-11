@@ -162,13 +162,17 @@ public class I18NLoader {
                 try {
                     I18NLoader.class.getDeclaredField(entry.getKey()).set(SINGLETON, entry.getValue().getAsString());
 
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                } catch (Exception ex) {
+                    CustomLogger.log(ex, 2, ex.getMessage());
+
+
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            CustomLogger.log(ex, 2, ex.getMessage());
+
         }
     }
 

@@ -36,7 +36,7 @@ public class Statistics {
             lectureStatistics.put(I18NLoader.LECTURE_AVERAGE_MSG, String.valueOf(calculateLectureAverage(clientCtrl, lectureId)));
 
         } catch(Exception ex){
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
         }
 
         return lectureStatistics;
@@ -61,7 +61,8 @@ public class Statistics {
             courseAttendants = rowSet.size();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            CustomLogger.log(ex, 2, ex.getMessage());
+
         }
 
         return courseAttendants;
@@ -86,8 +87,9 @@ public class Statistics {
             reviewParticipation = (double) reviewsOnLecture / courseAttendants * 100;
 
 
-        } catch (ArithmeticException e){
-            e.printStackTrace();
+        } catch (ArithmeticException ex){
+            CustomLogger.log(ex, 2, ex.getMessage());
+
         }
 
         return reviewParticipation;

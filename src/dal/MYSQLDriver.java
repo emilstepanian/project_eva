@@ -2,6 +2,7 @@ package dal;
 
 import com.sun.rowset.CachedRowSetImpl;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
@@ -36,8 +37,9 @@ public class MYSQLDriver {
             dbConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             result = dbConnection.prepareStatement(sql).executeQuery();
             cr.populate(result);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            CustomLogger.log(ex, 3, ex.getMessage());
         } finally {
             dbConnection.close();
 
@@ -57,8 +59,9 @@ public class MYSQLDriver {
             dbConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             dbConnection.prepareStatement(sql).executeUpdate();
 
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException ex){
+
+            CustomLogger.log(ex, 3, ex.getMessage());
         } finally {
             dbConnection.close();
         }

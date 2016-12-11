@@ -1,6 +1,7 @@
 package security;
 
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -20,8 +21,9 @@ public class Digester {
     static {
         try {
             digester = MessageDigest.getInstance("MD5");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            CustomLogger.log(ex, 2, ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -114,9 +116,10 @@ public class Digester {
         try {
             BASE64Decoder d = new BASE64Decoder();
             return d.decodeBuffer(string);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-            //LOGGING
+        } catch (IOException ex) {
+            CustomLogger.log(ex, 2, ex.getMessage());
+            throw new RuntimeException(ex);
+
         }
     }
 

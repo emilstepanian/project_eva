@@ -47,19 +47,19 @@ public class CustomLogger {
                 case 1:
                     logger.log(Level.FINEST, msg, ex);
                     if(!msg.equals("")){
-                        System.out.println(msg + I18NLoader.FINEST_ERROR);
+                        System.out.println(msg + " " + I18NLoader.FINEST_ERROR);
                     }
                     break;
                 case 2:
                     logger.log(Level.FINE, msg, ex);
                     if(!msg.equals("")){
-                        System.out.println(msg + I18NLoader.FINE_ERROR);
+                        System.out.println(msg + " " + I18NLoader.FINE_ERROR);
                     }
                     break;
                 case 3:
                     logger.log(Level.SEVERE, msg, ex);
                     if(!msg.equals("")){
-                        System.out.println(msg + I18NLoader.SEVERE_ERROR);
+                        System.out.println(msg + " " + I18NLoader.SEVERE_ERROR);
                     }
                     break;
                 default:

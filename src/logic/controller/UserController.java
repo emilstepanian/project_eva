@@ -52,7 +52,6 @@ public abstract class UserController {
             }
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
             CustomLogger.log(ex,2, I18NLoader.COULD_NOT_RETRIEVE_COURSES);
         }
 
@@ -93,7 +92,6 @@ public abstract class UserController {
             lectureArray = lectureArrayList.toArray(new Lecture[lectureArrayList.size()]);
 
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
             CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_RETRIEVE_LECTURES);
         }
 
@@ -143,7 +141,6 @@ public abstract class UserController {
             }
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
             CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_RETRIEVE_REVIEWS);
 
         }
@@ -175,8 +172,6 @@ public abstract class UserController {
             DBWrapper.updateRecords(ConfigLoader.REVIEW_TABLE, isDeletedField, whereParams);
             isSoftDeleted = true;
         } catch(Exception ex){
-
-            System.out.println(ex.getMessage());
             CustomLogger.log(ex, 2, I18NLoader.COULD_NOT_SOFT_DELETE_REVIEW_WITH_REVIEWID + String.valueOf(reviewId));
             isSoftDeleted = false;
 

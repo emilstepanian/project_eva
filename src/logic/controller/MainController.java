@@ -2,6 +2,7 @@ package logic.controller;
 
 import dal.DBWrapper;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import model.user.User;
 
 import javax.sql.rowset.CachedRowSet;
@@ -48,7 +49,8 @@ public class MainController {
             }
 
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
+
         }
         return null;
     }

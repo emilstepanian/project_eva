@@ -1,5 +1,7 @@
 package dal;
 
+import logic.misc.CustomLogger;
+
 import javax.sql.rowset.CachedRowSet;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -47,9 +49,7 @@ public class DBWrapper {
 
 
         } catch(SQLException ex){
-
-            System.out.println(ex.getMessage());
-
+            CustomLogger.log(ex, 2, ex.getMessage());
 
         }
         return records;
@@ -66,6 +66,7 @@ public class DBWrapper {
      * @return a String with the SQL-Statement, to the "FROM" clause.
      */
     private static String appendAttributes(String sql, String[] attributes, String table) {
+
         StringBuilder builder = new StringBuilder(sql);
 
         if(attributes == null) {
@@ -73,8 +74,11 @@ public class DBWrapper {
             builder.append(" * ");
 
         } else {
+
             for(int i=0;i<attributes.length;i++) {
+
                 builder.append(attributes[i]);
+
                 if (i != attributes.length -1){
                     builder.append(", ");
                 }
@@ -104,10 +108,13 @@ public class DBWrapper {
      */
 
     private static String joinOn(String table, Map<String, String> joins, String sql){
+
         StringBuilder builder = new StringBuilder(sql);
 
         if(!joins.isEmpty()){
+
             Iterator iterator = joins.entrySet().iterator();
+
             while(iterator.hasNext())
             {
                 builder.append(" JOIN ");
@@ -136,14 +143,17 @@ public class DBWrapper {
      * @return a String with the SQL-Statement, with the "WHERE" clause.
      */
     private static String buildWhere(Map<String, String> params, String sql){
+
         StringBuilder builder = new StringBuilder(sql);
 
         if(!params.isEmpty()){
+
             builder.append(" WHERE ");
 
             Iterator iterator = params.entrySet().iterator();
-            while(iterator.hasNext())
-            {
+
+            while(iterator.hasNext()){
+
                 Map.Entry<String, String> entry = (Map.Entry<String, String>) iterator.next();
                 builder.append(entry.getKey());
                 builder.append(" = ");
@@ -168,8 +178,10 @@ public class DBWrapper {
      * @param values A Map of Strings that contains 'keys' and 'values' in the INSERT clause. - "INSERT INTO (key) VALUES ("value")".
      */
     public static void insertIntoRecords(String table, Map<String, String> values) throws SQLException {
+
         String sql = "INSERT INTO ";
         StringBuilder builder = new StringBuilder();
+
         builder.append(sql);
         builder.append(table);
         builder.append(appendValues(values));
@@ -184,6 +196,7 @@ public class DBWrapper {
      * @return a String with the SQL-Statement, with the "VALUES" clause.
      */
     private static String appendValues(Map<String, String> values){
+
         StringBuilder builder = new StringBuilder();
         builder.append(" (");
 
@@ -195,6 +208,7 @@ public class DBWrapper {
                 builder.append(", ");
             }
         }
+
         builder.append(")");
         builder.append(" VALUES ");
         builder.append(" (");
@@ -236,7 +250,7 @@ public class DBWrapper {
 
 
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            CustomLogger.log(ex, 2, ex.getMessage());
 
         }
     }
@@ -292,10 +306,7 @@ public class DBWrapper {
 
 
         } catch(SQLException ex){
-
-            System.out.println(ex.getMessage());
-
-
+            CustomLogger.log(ex, 2, ex.getMessage());
         }
     }
 

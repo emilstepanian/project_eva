@@ -1,11 +1,10 @@
 package logic.controller;
 
-import com.sun.deploy.config.Config;
 import dal.DBWrapper;
 import logic.misc.ConfigLoader;
+import logic.misc.CustomLogger;
 import logic.misc.I18NLoader;
 import model.entity.Course;
-import model.entity.Lecture;
 import model.entity.Review;
 import model.entity.Study;
 import model.user.User;
@@ -13,7 +12,6 @@ import security.Digester;
 
 import javax.sql.rowset.CachedRowSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -312,10 +310,7 @@ public class AdminController extends UserController {
      */
     private void catchMessage(Exception ex){
         System.out.println(I18NLoader.AN_ERROR_HAS_OCCURRED);
-
-        if (ex != null) {
-            System.out.println(ex.getMessage());
-        }
+        CustomLogger.log(ex, 2, ex.getMessage());
         System.out.println("\n" + I18NLoader.REVERTING_TO_MAINMENU + "\n");
 
     }
