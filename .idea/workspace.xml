@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7156f47d-dc8c-4e4f-a9f5-c50e653d9d07" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/dump_after_codefreeze.sql" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/Main.class" afterPath="$PROJECT_DIR$/target/classes/Main.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/dal/DBWrapper.class" afterPath="$PROJECT_DIR$/target/classes/dal/DBWrapper.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/dal/MYSQLDriver.class" afterPath="$PROJECT_DIR$/target/classes/dal/MYSQLDriver.class" />
@@ -22,7 +21,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/view/server/AdminView.class" afterPath="$PROJECT_DIR$/target/classes/view/server/AdminView.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/view/server/MainView.class" afterPath="$PROJECT_DIR$/target/classes/view/server/MainView.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.log" afterPath="$PROJECT_DIR$/application.log" />
     </list>
     <ignored path="project_eva.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -719,7 +717,7 @@
       <workItem from="1481463170627" duration="28000" />
       <workItem from="1481463224577" duration="1197000" />
       <workItem from="1481468898111" duration="2640000" />
-      <workItem from="1481473423336" duration="27000" />
+      <workItem from="1481473423336" duration="55000" />
     </task>
     <task id="LOCAL-00001" summary="Finished complete rework of controllers and views concerning admin. &#10;&#10;____________________&#10;&#10;Info for changes before &quot;inital commit&quot;, as git was not added until 21.11.16:&#10;- Complete rework for project structure and classes&#10;- Changes and adaptation of almost every class to personal liking&#10;- Collapsed different types of users into one User class, as they were redundant.&#10;- Collapsed controllers and views to collectively handle different types of clients. &#10;- Added fields &quot;firstname&quot; and &quot;lastname&quot; in the database.&#10;- Added class for handling statistics&#10;- Not sure what else...">
       <created>1479739685473</created>
@@ -812,11 +810,18 @@
       <option name="project" value="LOCAL" />
       <updated>1481420873331</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="- added new SQL dump">
+      <created>1481473468710</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1481473468710</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="154013000" />
+    <option name="totallyTimeSpent" value="154041000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -885,7 +890,8 @@
     <MESSAGE value="- Tilføjet dansk som sprog til i18n" />
     <MESSAGE value="- Added logging." />
     <MESSAGE value="- added logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="- added logging" />
+    <MESSAGE value="- added new SQL dump" />
+    <option name="LAST_COMMIT_MESSAGE" value="- added new SQL dump" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1230,6 +1236,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
