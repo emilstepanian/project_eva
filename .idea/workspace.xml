@@ -717,7 +717,7 @@
       <workItem from="1481463170627" duration="28000" />
       <workItem from="1481463224577" duration="1197000" />
       <workItem from="1481468898111" duration="2640000" />
-      <workItem from="1481473423336" duration="55000" />
+      <workItem from="1481473423336" duration="84000" />
     </task>
     <task id="LOCAL-00001" summary="Finished complete rework of controllers and views concerning admin. &#10;&#10;____________________&#10;&#10;Info for changes before &quot;inital commit&quot;, as git was not added until 21.11.16:&#10;- Complete rework for project structure and classes&#10;- Changes and adaptation of almost every class to personal liking&#10;- Collapsed different types of users into one User class, as they were redundant.&#10;- Collapsed controllers and views to collectively handle different types of clients. &#10;- Added fields &quot;firstname&quot; and &quot;lastname&quot; in the database.&#10;- Added class for handling statistics&#10;- Not sure what else...">
       <created>1479739685473</created>
@@ -817,11 +817,18 @@
       <option name="project" value="LOCAL" />
       <updated>1481473468710</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="- forgot to add it">
+      <created>1481473502416</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1481473502416</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="154041000" />
+    <option name="totallyTimeSpent" value="154070000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -891,7 +898,8 @@
     <MESSAGE value="- Added logging." />
     <MESSAGE value="- added logging" />
     <MESSAGE value="- added new SQL dump" />
-    <option name="LAST_COMMIT_MESSAGE" value="- added new SQL dump" />
+    <MESSAGE value="- forgot to add it" />
+    <option name="LAST_COMMIT_MESSAGE" value="- forgot to add it" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
