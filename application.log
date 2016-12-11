@@ -6,3 +6,88 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 </log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2016-12-11T16:25:11</date>
+  <millis>1481469911025</millis>
+  <sequence>4</sequence>
+  <logger>Logger</logger>
+  <level>SEVERE</level>
+  <class>logic.misc.CustomLogger</class>
+  <method>log</method>
+  <thread>1</thread>
+  <exception>
+    <message>java.lang.NullPointerException</message>
+    <frame>
+      <class>logic.misc.CustomLogger</class>
+      <method>log</method>
+      <line>55</line>
+    </frame>
+    <frame>
+      <class>view.server.MainView</class>
+      <method>main</method>
+      <line>76</line>
+    </frame>
+    <frame>
+      <class>view.server.MainView</class>
+      <method>&lt;init&gt;</method>
+      <line>20</line>
+    </frame>
+    <frame>
+      <class>Main</class>
+      <method>main</method>
+      <line>76</line>
+    </frame>
+    <frame>
+      <class>sun.reflect.NativeMethodAccessorImpl</class>
+      <method>invoke0</method>
+    </frame>
+    <frame>
+      <class>sun.reflect.NativeMethodAccessorImpl</class>
+      <method>invoke</method>
+      <line>62</line>
+    </frame>
+    <frame>
+      <class>sun.reflect.DelegatingMethodAccessorImpl</class>
+      <method>invoke</method>
+      <line>43</line>
+    </frame>
+    <frame>
+      <class>java.lang.reflect.Method</class>
+      <method>invoke</method>
+      <line>498</line>
+    </frame>
+    <frame>
+      <class>com.intellij.rt.execution.application.AppMain</class>
+      <method>main</method>
+      <line>147</line>
+    </frame>
+  </exception>
+</record>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
