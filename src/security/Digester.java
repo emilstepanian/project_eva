@@ -14,7 +14,8 @@ import java.security.MessageDigest;
  */
 public class Digester {
 
-    private final static String SALT = ConfigLoader.HASH_SALT;
+    private final static String SERVER_SALT = ConfigLoader.HASH_SALT;
+    private final static String CLIENT_SALT = ConfigLoader.CLIENT_HASH_SALT;
     private final static String KEY = ConfigLoader.ENCRYPT_KEY;
     private static MessageDigest digester;
 
@@ -28,20 +29,39 @@ public class Digester {
     }
 
     /**
-     * Method that returns a hashed string
+     * Method that returns a hashed string using the server SALT
      * @param string String that needs to be hashed
      * @return The hashed String
      */
     public static String hash(String string){
         if (string == null || string.length() == 0){
             throw new IllegalArgumentException("Error");
-            //LOGGING
         }
 
-        string = string + Digester.SALT;
+        string = string + Digester.SERVER_SALT;
 
         return Digester._hash(string);
     }
+
+    /**
+     * Method that returns a hashed string using the client SALT
+     * Used when admin creates a new user. Is needed, to be able
+     * to store a hashed password that would match the hashed value
+     * coming from the client
+     * @param string String that needs to be hashed
+     * @return The hashed String
+     */
+    public static String clientHash(String string){
+        if (string == null || string.length() == 0){
+            throw new IllegalArgumentException("Error");
+        }
+
+        string = string + Digester.CLIENT_SALT;
+
+        return Digester._hash(string);
+    }
+
+
 
     /**
      * Private method used by hash() to hash and return the String.

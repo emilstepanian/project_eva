@@ -11,6 +11,7 @@
   "COURSES_JSON":"resources/courses.json",
   "STUDY_DATA_JSON": "resources/study_data.json",
   "HASH_SALT":"n0zaCTADRUuTb@JUp01n%5@(l@IAaLlZ",
+  "CLIENT_HASH_SALT":"sZ(2bDa49js@%shD2n@21sFxus)dGs6v",
   "ENCRYPT_KEY":"40674244454045cb9a70040a30e1c007",
   "SERVER_ADDRESS":"localhost",
   "SERVER_PORT":"5000",
