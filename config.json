@@ -21,6 +21,7 @@
 
 
 
+  "ID_COLUMN_OF_ALL_TABLES":"id",
   "USER_TABLE":"user",
   "USER_FIRSTNAME_COLUMN":"first_name",
   "USER_LASTNAME_COLUMN":"last_name",
