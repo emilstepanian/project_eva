@@ -7,8 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7156f47d-dc8c-4e4f-a9f5-c50e653d9d07" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/config.json" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
     </list>
     <ignored path="project_eva.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,16 +33,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="36" selection-start-line="29" selection-start-column="36" selection-end-line="29" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
@@ -818,7 +808,7 @@
       <workItem from="1481831631235" duration="242000" />
       <workItem from="1481841542834" duration="65000" />
       <workItem from="1481855387607" duration="340000" />
-      <workItem from="1481864601125" duration="300000" />
+      <workItem from="1481864601125" duration="373000" />
     </task>
     <task id="LOCAL-00001" summary="Finished complete rework of controllers and views concerning admin. &#10;&#10;____________________&#10;&#10;Info for changes before &quot;inital commit&quot;, as git was not added until 21.11.16:&#10;- Complete rework for project structure and classes&#10;- Changes and adaptation of almost every class to personal liking&#10;- Collapsed different types of users into one User class, as they were redundant.&#10;- Collapsed controllers and views to collectively handle different types of clients. &#10;- Added fields &quot;firstname&quot; and &quot;lastname&quot; in the database.&#10;- Added class for handling statistics&#10;- Not sure what else...">
       <created>1479739685473</created>
@@ -953,11 +943,18 @@
       <option name="project" value="LOCAL" />
       <updated>1481864855512</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="- How about now">
+      <created>1481864917185</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1481864917185</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="159588000" />
+    <option name="totallyTimeSpent" value="159661000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1032,7 +1029,8 @@
     <MESSAGE value="- Implemented a separate salt value for the client" />
     <MESSAGE value="- final commit" />
     <MESSAGE value="- is config.json being committed too?" />
-    <option name="LAST_COMMIT_MESSAGE" value="- is config.json being committed too?" />
+    <MESSAGE value="- How about now" />
+    <option name="LAST_COMMIT_MESSAGE" value="- How about now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
