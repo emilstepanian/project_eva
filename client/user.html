@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>project_eva</title>
+
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+
+
+  <!-- Stylesheets -->
+  <link href="css/custombootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="bower_components/toastr/toastr.css" rel="stylesheet" type="text/css">
+  <link href="css/grayscaleUser.css" rel="stylesheet">
+  <link href="css/customfullcalendar.css" rel="stylesheet">
+  <link href="css/customfullcalendar.print.css" rel="stylesheet" media="print">
+  <link href="css/custom.css" rel="stylesheet">
+  <link href="css/customstar-rating.css" rel="stylesheet" />
+</head>
+
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-custom navbar-fixed-top"  role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+
+        <!-- The burger menu, when the navbar collapses -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+          MENU <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- The left side of the menu bar -->
+        <a class="navbar-brand">
+          <div id="personalLabel">
+            <i class="fa animated"></i> <span id="userLabel" class="light" style="margin-left:-20px"></span>
+          </div>
+        </a>
+      </div>
+
+
+
+      <!-- The right side of the menu bar -->
+      <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+        <ul class="nav navbar-nav">
+          <li><a id="logOutAnchor" class="mousePointer">LOG UD</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Intro Header -->
+  <header class="intro">
+    <div class="intro-body">
+      <div class="container">
+        <div class="row customCalendar">
+          <br />
+          <br />
+          <br />
+          <br />
+
+          <!-- Full Calendar -->
+          <div id="calendar">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Modal -->
+  <div id="fullCalModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> </button>
+
+            <!-- The left side of the Modal header -->
+            <div class="h6" style="float:right;margin-right:15px;">
+              Kursus ID: <label id="courseId"/></label>,
+              Lektion ID: <label id="lectureId"/></label><br />
+            </div>
+
+            <!-- The right side of the Modal header -->
+            <h4 id="modalTitle" class="modal-title"></h4>
+            <div class="pull-right" id="rating">
+
+            </div>
+          </div>
+        </div>
+
+        <div id="modalBody" class="modal-body">
+          <!-- The left side of the Modal body -->
+          <div class="pull-left" >
+            Antal tilmeldte til kurset: <label id="courseAttendants"/></label><br />
+            Dato: <label id="startTime"/></label><br />
+            Type: <label id="type"/></label><br />
+            Lokale: <label id="location"/></label><br />
+            Svarprocent: <label id="reviewParticipation"/></label> %<br />
+          </div>
+
+          <!-- The right side of the Modal body -->
+          <div>
+            <ul id="commentList" class="commentList" style="margin-left:280px"></ul>
+          </div>
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button style="float:right" type="button" class="btn btn-primary" data-dismiss="modal">Luk</button>
+          <button style="float:right" class="btn btn-default"><a id="addReviewButton" target="_blank">Tilføj Rating</a></button>
+          <form class="form-inline" style="float:right" role="form">
+            <div class="form-group"><input id="commentInput" class="form-control" type="text" placeholder="Skriv kommentar..." /></div>
+          </form>
+          <div id="addRating"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--     Scripts     -->
+  <!-- jQuery -->
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+
+  <!-- jQuery easing -->
+  <script type="text/javascript" src="bower_components/jquery.easing/js/jquery.easing.js"></script>
+
+  <!-- Bootstrap -->
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+  <!-- moment -->
+  <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
+
+  <!-- Full Calendar -->
+  <script type="text/javascript" src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+
+  <!-- underscore -->
+  <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+
+  <!-- bootstrap-star-rating -->
+  <script type="text/javascript" src="bower_components/bootstrap-star-rating/js/star-rating.js"></script>
+
+  <!-- randomColor -->
+  <script type="text/javascript" src="bower_components/randomcolor/randomColor.js"></script>
+
+  <!-- toastr -->
+  <script type="text/javascript" src="bower_components/toastr/toastr.js"></script>
+
+  <!-- theme template JavaScript -->
+  <script type="text/javascript" src="js/grayscale.js"></script>
+
+  <!-- Other -->
+  <script type="text/javascript" src="js/sdk.js"></script>
+  <script type="text/javascript" src="js/user.page.js"></script>
+  <script type="text/javascript" src="js/calendar.js"></script>
+  <script type="text/javascript" src="js/modal.js"></script>
+  <script type="text/javascript" src="js/XORCipher.js"></script>
+
+</body>
+</html>
